@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toets jezelf</title>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#1d2733; --muted:#5d6b7a; --line:#dde3ea;
+  --accent:#1f6f8b; --accent-soft:#e3f1f6;
+  --good:#2e8b57; --good-soft:#e5f4ec;
+  --mid:#d08a16; --mid-soft:#fbf1df;
+  --bad:#c0392b; --bad-soft:#fbe7e5;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.45}
+button,input,textarea,select{font:inherit;color:inherit}
+.wrap{max-width:680px;margin:0 auto;padding:0 16px 96px}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 8px}
+header h1{font-size:1.35rem;margin:0;letter-spacing:-.01em}
+header h1 span{color:var(--accent)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:5}
+nav button{flex:1;max-width:226px;background:none;border:0;padding:12px 4px 14px;font-size:.9rem;color:var(--muted);cursor:pointer;border-top:3px solid transparent}
+nav button.on{color:var(--accent);border-top-color:var(--accent);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:14px 0}
+.card h2{font-size:1.1rem;margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.big{font-size:2.2rem;font-weight:700;line-height:1.1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 18px;cursor:pointer;font-weight:600;background:var(--accent);color:#fff;min-height:48px}
+.btn.wide{width:100%}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.plain{background:none;color:var(--muted);font-weight:500;padding:8px 10px;min-height:0}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row > *{flex:1}
+label{display:block;font-size:.9rem;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=date],textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+textarea{min-height:80px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.week{display:flex;gap:6px;margin:10px 0 4px}
+.day{flex:1;text-align:center;font-size:.78rem;color:var(--muted)}
+.dot{width:100%;aspect-ratio:1;max-width:38px;margin:0 auto 4px;border-radius:50%;border:2px solid var(--line);background:#fff}
+.dot.done{background:var(--good);border-color:var(--good)}
+.dot.today{border-color:var(--accent)}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line);margin:6px 0}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.vak{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.vak:first-of-type{border-top:0}
+.vak .name{font-weight:600}
+.vak .grow{flex:1;min-width:0}
+.chip{display:inline-block;font-size:.78rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.plan{background:var(--accent-soft);border-radius:12px;padding:12px 14px}
+.plan strong{color:var(--accent)}
+/* oefenen */
+.progress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 14px}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.q{font-size:1.25rem;font-weight:600;margin:6px 0 14px;white-space:pre-wrap}
+.a{background:var(--good-soft);border-radius:12px;padding:12px 14px;white-space:pre-wrap;margin:10px 0}
+.mine{background:var(--bg);border-radius:12px;padding:10px 14px;white-space:pre-wrap;margin:10px 0;color:var(--muted)}
+.grade{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.grade button{border:0;border-radius:12px;padding:12px 6px;font-weight:600;cursor:pointer;min-height:60px}
+.g-bad{background:var(--bad-soft);color:var(--bad)}
+.g-mid{background:var(--mid-soft);color:#8a5a08}
+.g-good{background:var(--good-soft);color:var(--good)}
+.kaart{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.kaart .grow{flex:1;min-width:0}
+.kaart .v{font-weight:600}
+.kaart .an{color:var(--muted);font-size:.92rem}
+.box{font-size:.75rem;white-space:nowrap}
+.steps{counter-reset:s;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:0 0 12px 42px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:.92rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+.hidden{display:none !important}
+details summary{cursor:pointer;color:var(--accent);font-weight:600;padding:6px 0}
+@media (max-width:480px){#datum{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Toets <span>jezelf</span></h1>
+    <span class="small"><a href="index.html" style="color:var(--accent);font-weight:600;text-decoration:none;margin-right:10px">Leren leren ↗</a><span class="muted" id="datum"></span></span>
+  </header>
+  <main id="main"></main>
+</div>
+<nav>
+  <button data-tab="vandaag" class="on">Vandaag</button>
+  <button data-tab="kaarten">Mijn kaarten</button>
+  <button data-tab="uitleg">Hoe werkt het?</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Opslag ---------- */
+const KEY = 'toetsjezelf_v1';
+const INTERVAL = [0, 1, 2, 4, 8, 16];      // dagen per doos (doos 0 = nieuw)
+const DAG_HERHAAL = 20;   // max. herhalingen per dag
+const DAG_NIEUW = 10;     // max. nieuwe kaarten per dag
+const EXAMEN_SPREIDING = 10; // laatste herhaling verdeeld over de 10 dagen voor het examen
+const WEEKDOEL = 4;
+const KLEUREN = ['#1f6f8b','#8e44ad','#c0392b','#2e8b57','#d08a16','#34495e','#b03a6f','#16808a'];
+
+function leeg(){ return {vakken:[], kaarten:[], log:{}, plan:'', dag:{datum:'', herhaald:0, nieuw:0}}; }
+let D = leeg();
+function laad(){
+  try{ const r = localStorage.getItem(KEY); if(r){ D = Object.assign(leeg(), JSON.parse(r)); } }catch(e){}
+}
+function bewaar(){
+  try{ localStorage.setItem(KEY, JSON.stringify(D)); }catch(e){ toast('Opslaan lukt niet in deze browser.'); }
+}
+
+/* ---------- Datums (lokaal) ---------- */
+function fmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function vandaag(){ return fmt(new Date()); }
+function plusDagen(s, n){ const [y,m,d]=s.split('-').map(Number); const t=new Date(y,m-1,d); t.setDate(t.getDate()+n); return fmt(t); }
+function verschil(a, b){ const p=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}; return Math.round((p(b)-p(a))/86400000); }
+function maandag(s){ const [y,m,d]=s.split('-').map(Number); const t=new Date(y,m-1,d); const wd=(t.getDay()+6)%7; t.setDate(t.getDate()-wd); return fmt(t); }
+const DAGNAMEN = ['ma','di','wo','do','vr','za','zo'];
+function mooi(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('nl-BE',{weekday:'long',day:'numeric',month:'long'}); }
+
+/* ---------- Hulp ---------- */
+const $ = s => document.querySelector(s);
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function id(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4); }
+function schud(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+let toastTimer;
+function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('on'),2200); }
+function vakVan(k){ return D.vakken.find(v=>v.id===k.vakId); }
+function status(k){ return k.doos===0 ? 'nieuw' : (k.doos>=4 ? 'vast' : 'bezig'); }
+
+/* ---------- Planning van kaarten ---------- */
+function teDoen(){
+  const t = vandaag();
+  const due = D.kaarten.filter(k => k.doos>0 && k.volgende<=t).sort((a,b)=>a.volgende.localeCompare(b.volgende));
+  const nieuw = D.kaarten.filter(k => k.doos===0).sort((a,b)=>a.gemaakt.localeCompare(b.gemaakt));
+  return {due, nieuw};
+}
+function dagTeller(){
+  const t = vandaag();
+  if(!D.dag || D.dag.datum !== t) D.dag = {datum:t, herhaald:0, nieuw:0};
+  return D.dag;
+}
+function sessieSet(){
+  const {due, nieuw} = teDoen(), dg = dagTeller();
+  const her = due.slice(0, Math.max(0, DAG_HERHAAL - dg.herhaald));   // oudste eerst
+  const nw = nieuw.slice(0, Math.max(0, DAG_NIEUW - dg.nieuw));
+  return schud(her.concat(nw));
+}
+/* Kies binnen een venster de dag met de minste kaarten: zo ontstaan geen pieken. */
+function rustigsteDag(van, tot){
+  const last = {};
+  D.kaarten.forEach(k => { if(k.doos>0) last[k.volgende] = (last[k.volgende]||0) + 1; });
+  let beste = van, min = Infinity;
+  for(let d = van; d <= tot; d = plusDagen(d, 1)){
+    const n = (last[d]||0) + Math.random()*0.5;   // kleine toevalsfactor bij gelijke drukte
+    if(n < min){ min = n; beste = d; }
+  }
+  return beste;
+}
+function volgendeDatum(k, dagen){
+  const t = vandaag();
+  const marge = dagen >= 4 ? Math.max(1, Math.round(dagen * 0.15)) : 0;
+  let van = plusDagen(t, Math.max(1, dagen - marge)), tot = plusDagen(t, dagen + marge);
+  const v = vakVan(k);
+  if(v && v.examen && v.examen > t){
+    const grens = plusDagen(v.examen, -1);
+    const start = plusDagen(v.examen, -EXAMEN_SPREIDING);
+    // Juist gekend binnen de laatste dagen voor het examen? Dan is dit de laatste herhaling:
+    // de kaart komt pas na het examen terug. Anders: één herhaling verspreid over die laatste dagen.
+    if(t < start && tot > grens){
+      tot = grens;
+      van = start;
+    }
+  }
+  return rustigsteDag(van, tot);
+}
+function beoordeel(k, oordeel){
+  const t = vandaag(), dg = dagTeller();
+  if(k.doos===0) dg.nieuw++; else dg.herhaald++;
+  if(oordeel==='goed'){
+    k.doos = k.doos===0 ? 2 : Math.min(5, k.doos+1);
+    k.volgende = volgendeDatum(k, INTERVAL[k.doos]);
+  } else if(oordeel==='twijfel'){
+    k.doos = Math.max(1, k.doos);
+    k.volgende = plusDagen(t, 1);
+  } else {
+    k.doos = 1;
+    k.volgende = plusDagen(t, 1);
+  }
+  D.log[t] = (D.log[t]||0) + 1;
+}
+
+/* ---------- Navigatie ---------- */
+let tab = 'vandaag';
+let open = null;   // geopend vak in "Mijn kaarten"
+let sessie = null;
+document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => {
+  if(sessie && !confirm('Je oefensessie stoppen?')) return;
+  sessie = null; tab = b.dataset.tab; open = null; teken();
+}));
+function teken(){
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab===tab && !sessie));
+  $('#datum').textContent = mooi(vandaag());
+  if(sessie) return tekenSessie();
+  if(tab==='vandaag') tekenVandaag();
+  else if(tab==='kaarten') (open ? tekenVak() : tekenVakken());
+  else tekenUitleg();
+  window.scrollTo(0,0);
+}
+
+/* ---------- Vandaag ---------- */
+function weekHtml(){
+  const t = vandaag(), ma = maandag(t);
+  let n = 0, html = '<div class="week">';
+  for(let i=0;i<7;i++){
+    const d = plusDagen(ma, i), gedaan = (D.log[d]||0) > 0;
+    if(gedaan) n++;
+    html += `<div class="day"><div class="dot ${gedaan?'done':''} ${d===t?'today':''}"></div>${DAGNAMEN[i]}</div>`;
+  }
+  html += '</div>';
+  const zin = n>=WEEKDOEL ? `Weekdoel gehaald: ${n} dagen. Sterk!` : `Deze week: ${n} van ${WEEKDOEL} dagen.`;
+  return `<p class="small muted" style="margin:0">${zin}</p>` + html;
+}
+function tekenVandaag(){
+  const m = $('#main');
+  if(!D.vakken.length){
+    m.innerHTML = `
+      <div class="card">
+        <h2>Welkom!</h2>
+        <p>Met deze tool toets je jezelf elke dag een paar minuten. De tool kiest welke vragen je vandaag moet herhalen. Jij hoeft niets te plannen.</p>
+        <button class="btn wide" id="begin">Maak je eerste vak</button>
+      </div>`;
+    $('#begin').onclick = () => { tab='kaarten'; teken(); };
+    return;
+  }
+  const {due, nieuw} = teDoen();
+  const set = sessieSet();
+  const rest = set.length ? [] : due;   // herhalingen boven het dagplafond
+  const minuten = Math.max(1, Math.round(set.length * 20 / 60));
+  const t = vandaag();
+  const examens = D.vakken.filter(v => v.examen && v.examen >= t).sort((a,b)=>a.examen.localeCompare(b.examen));
+  m.innerHTML = `
+    <div class="card">
+      ${set.length ? `
+        <div class="muted small">Vandaag te doen</div>
+        <div class="big">${set.length} ${set.length===1?'kaart':'kaarten'}</div>
+        <p class="muted" style="margin:4px 0 14px">ongeveer ${minuten} ${minuten===1?'minuut':'minuten'}${nieuw.length && set.some(k=>k.doos===0) ? ' · met nieuwe kaarten' : ''}</p>
+        <button class="btn wide" id="start">Start</button>`
+      : `
+        <div class="big" style="font-size:1.6rem">Klaar voor vandaag</div>
+        ${rest.length
+          ? `<p class="muted">Genoeg voor vandaag. Er wachten nog ${rest.length} ${rest.length===1?'kaart':'kaarten'}; die schuiven rustig door naar de volgende dagen.</p>
+             <button class="btn ghost wide" id="meer">Toch nog ${Math.min(10, rest.length)} extra</button>`
+          : `<p class="muted">Morgen staan er weer kaarten klaar. Wil je toch nog oefenen? Kies een vak bij <em>Mijn kaarten</em>.</p>`}`}
+    </div>
+    <div class="card">
+      <h2>Mijn week</h2>
+      ${weekHtml()}
+    </div>
+    <div class="card">
+      <h2>Mijn plan</h2>
+      ${D.plan
+        ? `<div class="plan">Als ik <strong>${esc(D.plan)}</strong>, dan doe ik 10 minuten Toets jezelf.</div>
+           <button class="btn plain" id="planWijzig">Aanpassen</button>`
+        : `<p class="small muted" style="margin-top:0">Kies een vast moment. Dan hoef je er niet elke dag over na te denken.</p>
+           <label for="planIn">Als ik …</label>
+           <input type="text" id="planIn" placeholder="bv. na het avondeten, na mijn huiswerk">
+           <p class="small muted">… dan doe ik 10 minuten Toets jezelf.</p>
+           <button class="btn ghost" id="planOk">Bewaar mijn plan</button>`}
+    </div>
+    ${examens.length ? `<div class="card"><h2>Examens</h2>${examens.map(v=>{
+      const n = verschil(t, v.examen);
+      return `<div class="vak"><div class="grow"><div class="name">${esc(v.naam)}</div><div class="small muted">${mooi(v.examen)}</div></div><span class="chip">${n===0?'vandaag':(n===1?'morgen':'nog '+n+' dagen')}</span></div>`;
+    }).join('')}</div>` : ''}
+  `;
+  if(set.length) $('#start').onclick = () => startSessie(set, 'dagelijks', null);
+  else if(rest.length) $('#meer').onclick = () => startSessie(schud(rest.slice(0, 10)), 'dagelijks', null);
+  if(D.plan) $('#planWijzig').onclick = () => { D.plan=''; bewaar(); teken(); };
+  else $('#planOk').onclick = () => { const v=$('#planIn').value.trim(); if(!v) return; D.plan=v; bewaar(); teken(); };
+}
+
+/* ---------- Oefensessie ---------- */
+function startSessie(kaarten, modus, vakId){
+  sessie = {rij: kaarten.map(k=>({id:k.id, extra:false})), i:0, modus, vakId, fase:'vraag', mijn:'', goed:0, totaal:kaarten.length};
+  teken();
+}
+function tekenSessie(){
+  const s = sessie, m = $('#main');
+  if(s.i >= s.rij.length) return tekenEinde();
+  const item = s.rij[s.i];
+  const k = D.kaarten.find(x=>x.id===item.id);
+  if(!k){ s.i++; return tekenSessie(); }
+  const v = vakVan(k);
+  const pct = Math.round(100 * s.i / s.rij.length);
+  m.innerHTML = `
+    <div class="row" style="margin-top:6px">
+      <span class="small muted">${s.modus==='extra' ? 'Extra oefenen' : 'Kaart'} ${Math.min(s.i+1, s.rij.length)} van ${s.rij.length}</span>
+      <span style="flex:0"><button class="btn plain" id="stop">Stop</button></span>
+    </div>
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <div class="card">
+      <span class="chip" style="background:${v?v.kleur:'#999'}22;color:${v?v.kleur:'#555'}">${esc(v?v.naam:'')}</span>
+      ${item.extra ? '<span class="chip" style="margin-left:6px;background:var(--bad-soft);color:var(--bad)">nog eens</span>' : ''}
+      <div class="q">${esc(k.v)}</div>
+      ${s.fase==='vraag' ? `
+        <label for="mijn">Typ of zeg eerst je antwoord. Pas dan kijken!</label>
+        <textarea id="mijn" placeholder="Mijn antwoord …">${esc(s.mijn)}</textarea>
+        <button class="btn wide" id="toon" style="margin-top:12px">Toon antwoord</button>
+      ` : `
+        ${s.mijn.trim() ? `<div class="small muted">Jouw antwoord</div><div class="mine">${esc(s.mijn)}</div>` : ''}
+        <div class="small muted">Juiste antwoord</div>
+        <div class="a">${esc(k.a)}</div>
+        <p class="small muted" style="margin:12px 0 0">Wees eerlijk: alleen zo komt deze vraag op het juiste moment terug.</p>
+        <div class="grade">
+          <button class="g-bad" data-o="fout">Wist ik niet</button>
+          <button class="g-mid" data-o="twijfel">Twijfel</button>
+          <button class="g-good" data-o="goed">Wist ik</button>
+        </div>
+      `}
+    </div>`;
+  $('#stop').onclick = () => { sessie=null; teken(); };
+  if(s.fase==='vraag'){
+    const ta = $('#mijn');
+    ta.addEventListener('input', () => s.mijn = ta.value);
+    $('#toon').onclick = () => { s.fase='antwoord'; teken(); };
+  } else {
+    m.querySelectorAll('.grade button').forEach(b => b.onclick = () => antwoord(b.dataset.o));
+  }
+}
+function antwoord(o){
+  const s = sessie, item = s.rij[s.i];
+  const k = D.kaarten.find(x=>x.id===item.id);
+  if(!item.extra){
+    if(o==='goed') s.goed++;
+    if(s.modus==='dagelijks') beoordeel(k, o);
+    else { // extra oefenen: alleen een fout zet de kaart terug
+      if(o==='fout'){ k.doos=1; k.volgende=plusDagen(vandaag(),1); }
+      D.log[vandaag()] = (D.log[vandaag()]||0) + 1;
+    }
+    if(o==='fout') s.rij.push({id:k.id, extra:true});   // komt aan het eind nog eens terug
+    bewaar();
+  }
+  s.i++; s.fase='vraag'; s.mijn='';
+  teken();
+}
+function tekenEinde(){
+  const s = sessie;
+  const zin = s.goed===s.totaal ? 'Alles juist. Knap!' :
+              s.goed >= s.totaal*0.7 ? 'Goed bezig.' : 'Moeilijk? Dan was dit net nuttig: ophalen dat moeite kost, blijft beter hangen.';
+  $('#main').innerHTML = `
+    <div class="card" style="text-align:center">
+      <div class="muted small">Klaar!</div>
+      <div class="big">${s.goed} van ${s.totaal}</div>
+      <p class="muted">wist je meteen. ${zin}</p>
+      ${weekHtml()}
+      <button class="btn wide" id="terug" style="margin-top:14px">Terug</button>
+    </div>`;
+  $('#terug').onclick = () => { const was = s.modus; sessie=null; if(was==='extra'){ tab='kaarten'; } teken(); };
+}
+
+/* ---------- Mijn kaarten ---------- */
+function verdeling(kaarten){
+  const n = {nieuw:0, bezig:0, vast:0};
+  kaarten.forEach(k => n[status(k)]++);
+  const tot = kaarten.length || 1;
+  return {n, html:`<div class="bar">
+      <i style="width:${100*n.vast/tot}%;background:var(--good)"></i>
+      <i style="width:${100*n.bezig/tot}%;background:var(--mid)"></i>
+      <i style="width:${100*n.nieuw/tot}%;background:#b8c4d0"></i></div>`};
+}
+const LEGENDE = `<div class="legend"><span><b style="background:var(--good)"></b>vast</span><span><b style="background:var(--mid)"></b>bezig</span><span><b style="background:#b8c4d0"></b>nieuw</span></div>`;
+
+function tekenVakken(){
+  const m = $('#main');
+  m.innerHTML = `
+    <div class="card">
+      <h2>Mijn vakken</h2>
+      ${D.vakken.length ? D.vakken.map(v => {
+        const ks = D.kaarten.filter(k=>k.vakId===v.id), vd = verdeling(ks);
+        return `<div class="vak" data-id="${v.id}" style="cursor:pointer">
+          <span style="width:12px;height:12px;border-radius:50%;background:${v.kleur};flex:0 0 12px"></span>
+          <div class="grow"><div class="name">${esc(v.naam)}</div>
+            ${ks.length ? vd.html : ''}
+            <div class="small muted">${ks.length} kaarten${ks.length ? ` · ${vd.n.vast} vast` : ''}${v.examen ? ` · examen ${mooi(v.examen)}` : ''}</div></div>
+          <span class="muted">›</span></div>`;
+      }).join('') + LEGENDE : '<p class="muted">Nog geen vakken.</p>'}
+    </div>
+    <div class="card">
+      <h2>Nieuw vak</h2>
+      <label for="vNaam">Naam van het vak</label>
+      <input type="text" id="vNaam" placeholder="bv. Chemie">
+      <label for="vEx">Datum van het examen (mag leeg)</label>
+      <input type="date" id="vEx">
+      <button class="btn" id="vOk" style="margin-top:12px">Vak toevoegen</button>
+    </div>
+    <div class="card">
+      <h2>Bewaren en overzetten</h2>
+      <p class="small muted" style="margin-top:0">Je kaarten staan alleen op dit toestel, in deze browser. Wis je je browsergegevens of wissel je van toestel? Maak dan eerst een reservekopie.</p>
+      <div class="row">
+        <button class="btn ghost" id="exp">Reservekopie downloaden</button>
+        <button class="btn ghost" id="imp">Reservekopie terugzetten</button>
+      </div>
+      <input type="file" id="impFile" accept=".json,application/json" class="hidden">
+    </div>`;
+  m.querySelectorAll('.vak[data-id]').forEach(el => el.onclick = () => { open = el.dataset.id; teken(); });
+  $('#vOk').onclick = () => {
+    const naam = $('#vNaam').value.trim(); if(!naam) return $('#vNaam').focus();
+    D.vakken.push({id:id(), naam, examen: $('#vEx').value || null, kleur: KLEUREN[D.vakken.length % KLEUREN.length]});
+    bewaar(); open = D.vakken[D.vakken.length-1].id; teken(); toast('Vak toegevoegd. Maak nu je eerste kaarten.');
+  };
+  $('#exp').onclick = () => {
+    const blob = new Blob([JSON.stringify(D, null, 1)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'toets-jezelf-' + vandaag() + '.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  };
+  $('#imp').onclick = () => $('#impFile').click();
+  $('#impFile').onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const nieuw = JSON.parse(r.result);
+        if(!Array.isArray(nieuw.vakken) || !Array.isArray(nieuw.kaarten)) throw 0;
+        if(!confirm('Je huidige kaarten worden vervangen door de reservekopie. Doorgaan?')) return;
+        D = Object.assign(leeg(), nieuw); bewaar(); teken(); toast('Reservekopie teruggezet.');
+      }catch(err){ toast('Dit bestand is geen reservekopie van Toets jezelf.'); }
+    };
+    r.readAsText(f);
+  };
+}
+
+function tekenVak(){
+  const v = D.vakken.find(x=>x.id===open);
+  if(!v){ open=null; return teken(); }
+  const ks = D.kaarten.filter(k=>k.vakId===v.id);
+  const vd = verdeling(ks);
+  const t = vandaag();
+  const m = $('#main');
+  m.innerHTML = `
+    <button class="btn plain" id="terug" style="margin-top:6px">‹ Alle vakken</button>
+    <div class="card">
+      <h2 style="color:${v.kleur}">${esc(v.naam)}</h2>
+      ${ks.length ? vd.html + LEGENDE : ''}
+      <p class="small muted">${ks.length} kaarten · ${vd.n.vast} vast · ${vd.n.bezig} bezig · ${vd.n.nieuw} nieuw</p>
+      ${ks.length >= 5 && vd.n.vast >= ks.length / 2 ? `<p class="small" style="background:var(--mid-soft);border-radius:10px;padding:8px 12px">Veel kaarten zitten vast. Test jezelf nu ook met vragen die je niet zelf maakte: van je duo, een oude toets of nieuwe oefeningen.</p>` : ''}
+      <button class="btn ghost wide" id="extra" ${ks.length?'':'disabled'}>Oefen alle kaarten van dit vak</button>
+      <p class="small muted" style="margin-bottom:0">Extra oefenen telt mee voor je week, maar verandert je planning niet. Alleen wat je niet wist, komt sneller terug.</p>
+    </div>
+    <div class="card">
+      <h2>Nieuwe kaart</h2>
+      <label for="kV">Vraag</label>
+      <textarea id="kV" placeholder="Maak van een titel een vraag. Vraag ook waarom en hoe."></textarea>
+      <label for="kA">Antwoord</label>
+      <textarea id="kA" placeholder="Kort en volledig"></textarea>
+      <button class="btn" id="kOk" style="margin-top:12px">Kaart toevoegen</button>
+      <details style="margin-top:14px">
+        <summary>Veel kaarten tegelijk plakken</summary>
+        <p class="small muted">Eén kaart per regel: <code>vraag | antwoord</code>. Handig voor een lijst van je leraar of van je duo.</p>
+        <textarea id="bulk" style="min-height:120px" placeholder="Wat is een ion? | Een atoom met een lading&#10;Waarom geleidt zout water? | Er zijn vrije ionen"></textarea>
+        <button class="btn ghost" id="bulkOk" style="margin-top:8px">Toevoegen</button>
+      </details>
+    </div>
+    <div class="card">
+      <h2>Kaarten (${ks.length})</h2>
+      ${ks.length ? ks.slice().reverse().map(k => {
+        const st = status(k);
+        const wanneer = k.doos===0 ? 'nieuw' : (k.volgende<=t ? 'vandaag' : 'over ' + verschil(t,k.volgende) + ' d');
+        const kl = st==='vast' ? 'var(--good)' : st==='bezig' ? 'var(--mid)' : 'var(--muted)';
+        return `<div class="kaart" data-id="${k.id}">
+          <div class="grow"><div class="v">${esc(k.v)}</div><div class="an">${esc(k.a)}</div></div>
+          <div style="text-align:right"><div class="box" style="color:${kl};font-weight:600">${wanneer}</div>
+          <button class="btn plain small" data-act="edit">wijzig</button><button class="btn plain small" data-act="del">wis</button></div></div>`;
+      }).join('') : '<p class="muted">Nog geen kaarten.</p>'}
+    </div>
+    <div class="card">
+      <h2>Vak</h2>
+      <label for="vEx2">Datum van het examen</label>
+      <input type="date" id="vEx2" value="${v.examen||''}">
+      <p class="small muted">Met een examendatum zorgt de tool dat elke kaart nog eens terugkomt vóór het examen.</p>
+      <div class="row">
+        <button class="btn ghost" id="deel" ${ks.length?'':'disabled'}>Kaarten kopiëren voor je duo</button>
+        <button class="btn plain" id="kDelAll" style="color:var(--bad)" ${ks.length?'':'disabled'}>Alle kaarten wissen</button>
+        <button class="btn plain" id="vDel" style="color:var(--bad)">Vak wissen</button>
+      </div>
+      <p class="small muted" style="margin-bottom:0">Nieuw semester? Wis alle kaarten, houd het vak en pas de examendatum aan.</p>
+    </div>`;
+  $('#terug').onclick = () => { open=null; teken(); };
+  $('#extra').onclick = () => startSessie(schud(ks.slice()), 'extra', v.id);
+  $('#kOk').onclick = () => {
+    const q = $('#kV').value.trim(), a = $('#kA').value.trim();
+    if(!q || !a) return toast('Vul een vraag én een antwoord in.');
+    D.kaarten.push({id:id(), vakId:v.id, v:q, a, doos:0, volgende:t, gemaakt:new Date().toISOString()});
+    bewaar(); teken(); toast('Kaart toegevoegd.'); setTimeout(()=>$('#kV') && $('#kV').focus(), 50);
+  };
+  $('#bulkOk').onclick = () => {
+    const regels = $('#bulk').value.split('\n').map(r=>r.trim()).filter(Boolean);
+    let n = 0;
+    regels.forEach((r, i) => {
+      const p = r.includes('|') ? r.split('|') : r.split('\t');
+      if(p.length < 2) return;
+      const q = p[0].trim(), a = p.slice(1).join(r.includes('|')?'|':' ').trim();
+      if(!q || !a) return;
+      D.kaarten.push({id:id(), vakId:v.id, v:q, a, doos:0, volgende:t, gemaakt:new Date(Date.now()+i).toISOString()});
+      n++;
+    });
+    if(!n) return toast('Geen kaarten gevonden. Gebruik: vraag | antwoord');
+    bewaar(); teken(); toast(n + (n===1?' kaart':' kaarten') + ' toegevoegd.');
+  };
+  m.querySelectorAll('.kaart').forEach(el => {
+    const k = D.kaarten.find(x=>x.id===el.dataset.id);
+    el.querySelector('[data-act=del]').onclick = () => {
+      const idx = D.kaarten.indexOf(k); D.kaarten.splice(idx,1); bewaar(); teken();
+      toast('Kaart gewist.');
+    };
+    el.querySelector('[data-act=edit]').onclick = () => {
+      el.innerHTML = `<div class="grow">
+        <textarea class="eV">${esc(k.v)}</textarea>
+        <textarea class="eA" style="margin-top:6px">${esc(k.a)}</textarea>
+        <div class="row" style="margin-top:6px"><button class="btn ghost eOk">Bewaar</button><button class="btn plain eNo">Annuleer</button></div></div>`;
+      el.querySelector('.eOk').onclick = () => {
+        const q = el.querySelector('.eV').value.trim(), a = el.querySelector('.eA').value.trim();
+        if(q && a){ k.v=q; k.a=a; bewaar(); }
+        teken();
+      };
+      el.querySelector('.eNo').onclick = () => teken();
+    };
+  });
+  $('#vEx2').onchange = e => { v.examen = e.target.value || null; bewaar(); toast('Examendatum bewaard.'); };
+  $('#deel').onclick = () => {
+    const txt = ks.map(k => k.v.replace(/\n/g,' ') + ' | ' + k.a.replace(/\n/g,' ')).join('\n');
+    const klaar = () => toast('Gekopieerd. Je duo plakt dit bij "Veel kaarten tegelijk plakken".');
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(klaar, () => toonTekst(txt));
+    } else toonTekst(txt);
+  };
+  $('#kDelAll').onclick = () => {
+    if(!confirm(`Alle ${ks.length} kaarten van "${v.naam}" wissen? Het vak blijft bestaan.`)) return;
+    D.kaarten = D.kaarten.filter(k=>k.vakId!==v.id);
+    bewaar(); toast('Kaarten gewist. Pas de examendatum aan.'); teken();
+  };
+  $('#vDel').onclick = () => {
+    if(!confirm(`"${v.naam}" en alle ${ks.length} kaarten wissen?`)) return;
+    D.kaarten = D.kaarten.filter(k=>k.vakId!==v.id);
+    D.vakken = D.vakken.filter(x=>x.id!==v.id);
+    bewaar(); open=null; teken();
+  };
+}
+function toonTekst(txt){
+  const ta = document.createElement('textarea'); ta.value = txt; ta.style.minHeight='160px';
+  $('#main').prepend(ta); ta.select(); toast('Selecteer en kopieer de tekst hierboven.');
+}
+
+/* ---------- Uitleg ---------- */
+function tekenUitleg(){
+  $('#main').innerHTML = `
+    <div class="card">
+      <h2>Zo werkt het</h2>
+      <ol class="steps">
+        <li><strong>Maak kaarten</strong> uit je eigen cursus: een vraag en een kort antwoord. Maak van titels vragen. Stel ook waarom- en hoe-vragen.</li>
+        <li><strong>Elke dag hoogstens 10 minuten.</strong> Open <em>Vandaag</em>. De tool kiest welke kaarten je moet herhalen.</li>
+        <li><strong>Eerst zelf antwoorden,</strong> pas dan kijken. Typ je antwoord of zeg het hardop.</li>
+        <li><strong>Wees eerlijk.</strong> Wist je het niet? Dan komt de kaart morgen terug. Wist je het wel? Dan wacht de tool steeds langer: ongeveer 2, 4, 8, 16 dagen.</li>
+        <li><strong>Nooit te veel op één dag.</strong> Je krijgt hoogstens ${DAG_HERHAAL} herhalingen en ${DAG_NIEUW} nieuwe kaarten per dag. Een dag overgeslagen? De rest schuift gewoon door.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Waarom werkt dit?</h2>
+      <p><strong>Ophalen is beter dan herlezen.</strong> Als je herleest, herken je alles en denk je: dat ken ik. Maar herkennen is niet hetzelfde als onthouden. Als je jezelf toetst, merk je wat je echt weet. En elke keer dat je iets ophaalt, onthoud je het beter.</p>
+      <p><strong>Spreiden is beter dan stampen.</strong> Vier keer 10 minuten op verschillende dagen werkt beter dan één keer 40 minuten. De tool regelt dat voor jou.</p>
+      <p style="margin-bottom:0"><strong>Moeilijk is goed.</strong> Ophalen voelt lastiger dan lezen. Dat is geen teken dat het niet werkt. Het is net het teken dat je brein aan het leren is.</p>
+    </div>
+    <div class="card">
+      <h2>Wat betekenen de kleuren?</h2>
+      <p class="small" style="margin-top:0"><span class="chip" style="background:#e8edf2;color:var(--muted)">nieuw</span> nog niet geoefend ·
+      <span class="chip" style="background:var(--mid-soft);color:#8a5a08">bezig</span> komt binnenkort terug ·
+      <span class="chip" style="background:var(--good-soft);color:var(--good)">vast</span> je kent deze kaart</p>
+      <p class="small muted" style="margin-bottom:0">Een weekdoel is ${WEEKDOEL} van de 7 dagen. Een dag missen is geen probleem.</p>
+    </div>
+    <div class="card">
+      <h2>Welke vragen maak je? Vier vragen bij leerstof</h2>
+      <p style="margin-top:0">Vertrek van de <strong>leerdoelen</strong> of de titels in je cursus. Maak niet alleen wat-vragen.</p>
+      <p><strong>Geschiedenis, aardrijkskunde, biologie …</strong></p>
+      <ol>
+        <li><strong>Wat betekent het?</strong> Een begrip, met vaktaal en een voorbeeld. <span class="muted">(kennis)</span></li>
+        <li><strong>Hoe hangt het samen?</strong> Oorzaak en gevolg, of de stappen van een proces. <span class="muted">(redeneren)</span></li>
+        <li><strong>Kan ik het gebruiken?</strong> Wat gebeurt er als …? <span class="muted">(toepassen)</span></li>
+        <li><strong>Waar zie ik dit vandaag, of in een ander vak?</strong> <span class="muted">(verbinden)</span></li>
+      </ol>
+      <p><strong>Frans, Engels, Nederlands …</strong></p>
+      <ol>
+        <li><strong>Ken ik het?</strong> Van Nederlands naar de taal, juist geschreven, met lidwoord.</li>
+        <li><strong>Waarom deze vorm?</strong> De regel met een voorbeeld.</li>
+        <li><strong>Kan ik het gebruiken?</strong> Maak een zin met …</li>
+        <li><strong>Lukt het in een tekst die ik niet ken?</strong> Maak een oefenkaart: "Lees de tekst p. 30 en maak de vragen zonder te kijken."</li>
+      </ol>
+      <p style="margin-bottom:0">Eén vraag = één ding. Kan je het antwoord niet in één keer zeggen? Maak er twee kaarten van.</p>
+    </div>
+    <div class="card">
+      <h2>Wiskunde, fysica en chemie</h2>
+      <p style="margin-top:0">Een vraagstuk los je niet op je gsm op. Maak dan deze kaarten:</p>
+      <p>Dezelfde vier vragen: <strong>Wat betekent elke grootheid? Waarom klopt elke stap? Lukt een nieuwe oefening? Herken ik het type?</strong></p>
+      <p><strong>Herkenkaart.</strong> Voorkant: een korte opgave. Achterkant: welk type het is, welke formule en de eerste stap. Zo leer je herkennen wat je moet doen.</p>
+      <p style="margin-bottom:0"><strong>Oefenkaart.</strong> Voorkant: "Maak oefening 12 p. 54 opnieuw op papier, zonder naar de oplossing te kijken." Achterkant: de uitkomst. Je rekent op papier; de tool zegt wanneer je de oefening opnieuw maakt.</p>
+    </div>
+    <div class="card">
+      <h2>Woordjes, lange antwoorden en tekeningen</h2>
+      <p style="margin-top:0"><strong>Woordjes.</strong> Maak de kaart van Nederlands naar Frans: dat is moeilijker en zo wordt het getoetst. Schrijf het woord op papier en vergelijk letter per letter. Eén fout = "Wist ik niet".</p>
+      <p><strong>Lange antwoorden.</strong> Maak één kaart per kernpunt. Maak daarnaast één kaart "Leg uit … (3 kernwoorden)" met de kernwoorden als antwoord. Leg hardop uit of schrijf op een kladblad. Tel dan: had je alle kernwoorden?</p>
+      <p style="margin-bottom:0"><strong>Tekeningen.</strong> Oefen op papier: teken uit je hoofd of dek de namen op een kopie van de figuur af. Maak in de tool een kaart als herinnering, bv. "Teken de bloedsomloop en benoem 6 delen". Achterkant: "cursus p. 34". Zo komt de tekening op tijd terug.</p>
+    </div>
+    <div class="card" style="border-color:var(--mid);background:var(--mid-soft)">
+      <h2>Opgelet: vast is nog niet klaar</h2>
+      <p style="margin-top:0">Ken je al je kaarten? Goed, maar dan ben je nog niet klaar voor het examen:</p>
+      <ul>
+        <li>Je toetst alleen wat je zelf koos. Wat je niet opviel, staat er niet op.</li>
+        <li>Na een tijd herken je de vraag, niet de leerstof. Op het examen staat het anders.</li>
+        <li>Het examen vraagt ook toepassen: nieuwe oefeningen, nieuwe situaties.</li>
+      </ul>
+      <p style="margin-bottom:0"><strong>Test jezelf daarom ook met vragen die je niet zelf maakte:</strong> de kaarten van je duo, een oude toets, nieuwe oefeningen uit het boek.</p>
+    </div>`;
+}
+
+laad();
+teken();
+</script>
+</body>
+</html>

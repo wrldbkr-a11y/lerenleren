@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leren leren · online cursus</title>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#1d2733; --muted:#5d6b7a; --line:#dde3ea;
+  --accent:#2B4C9A; --accent-soft:#e8eefa;
+  --good:#2e8b57; --good-soft:#e5f4ec; --bad:#c0392b; --bad-soft:#fbe7e5;
+  --tip:#B07F00; --tip-soft:#FFF6DB;
+  --mot:#E4572E; --mot-soft:#FDECE6; --pla:#0F8B83; --pla-soft:#E1F4F2; --stu:#6A4FB3; --stu-soft:#EEEAF8;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5}
+button,input,textarea,select{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 110px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 0 6px}
+header h1{font-size:1.3rem;margin:0}
+header h1 span{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:14px 0}
+.card h2{font-size:1.15rem;margin:0 0 10px}
+.card h3{font-size:1rem;margin:16px 0 6px}
+.muted{color:var(--muted)} .small{font-size:.88rem}
+p{margin:8px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:11px 18px;cursor:pointer;font-weight:600;background:var(--accent);color:#fff;min-height:44px;text-decoration:none}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.plain{background:none;color:var(--muted);font-weight:500;padding:8px 10px;min-height:0}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+label.l{display:block;font-weight:600;margin:14px 0 6px}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+textarea{min-height:76px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin:6px 0;cursor:pointer;background:#fff}
+.opt input{margin-top:4px;width:20px;height:20px;flex:none}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.fb{background:var(--accent-soft);border-radius:10px;padding:10px 12px;margin:6px 0 4px}
+.box{border-radius:10px;padding:12px 14px;margin:12px 0;border-left:6px solid var(--accent);background:var(--accent-soft)}
+.box b.h{display:block;margin-bottom:4px}
+.onthoud{border-left-color:#E0A100;background:var(--tip-soft)}
+.onthoud .k{font-size:.78rem;letter-spacing:.08em;font-weight:700;color:var(--tip)}
+.thuis{background:var(--ink);color:#fff;border-left:0}
+.thuis .k{font-size:.78rem;letter-spacing:.08em;font-weight:700;opacity:.8}
+table.t{width:100%;border-collapse:collapse;margin:10px 0;font-size:.93rem}
+table.t th{background:var(--accent);color:#fff;text-align:left;padding:7px 9px}
+table.t td{border:1px solid var(--line);padding:7px 9px;vertical-align:top;background:#fff}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+.scale button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ses{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff;cursor:pointer;width:100%;text-align:left}
+.ses .code{flex:none;width:52px;height:52px;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.15rem}
+.ses .grow{flex:1;min-width:0}
+.ses .ti{font-weight:700}
+.chip{display:inline-block;font-size:.76rem;padding:2px 8px;border-radius:999px;font-weight:700;margin-right:4px}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.busy{background:var(--tip-soft);color:var(--tip)}
+.chip.must{background:var(--ink);color:#fff}
+.top{border-radius:var(--radius);color:#fff;padding:16px 18px;margin-top:10px}
+.top .k{font-size:.8rem;letter-spacing:.08em;font-weight:700;opacity:.85}
+.top h2{margin:2px 0 4px;font-size:1.35rem}
+.prog{height:8px;background:rgba(255,255,255,.35);border-radius:4px;overflow:hidden;margin-top:10px}
+.prog i{display:block;height:100%;background:#fff}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px;z-index:5}
+.nav .in{max-width:720px;margin:0 auto;display:flex;gap:10px}
+.nav .in .btn{flex:1}
+.say{float:right;margin:-4px -6px 0 8px}
+.big{font-size:2rem;font-weight:700}
+.timer{font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:center;margin:8px 0}
+.flash{border:2px solid var(--line);border-radius:14px;padding:26px 16px;text-align:center;background:#fff;margin:10px 0}
+.flash .w{font-size:1.8rem;font-weight:700}
+.flash .a{font-size:1.4rem;color:var(--good);margin-top:8px;min-height:1.6em}
+.good{color:var(--good);font-weight:700} .bad{color:var(--bad);font-weight:700}
+.q{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;background:#fff}
+.q .row input{flex:1;min-width:120px}
+.cnt{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.cnt:first-child{border-top:0}
+.cnt .grow{flex:1}
+.cnt button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:1.2rem;cursor:pointer}
+.cnt b.n{min-width:28px;text-align:center;font-size:1.2rem}
+.cornell{display:grid;grid-template-columns:38% 1fr;gap:8px;margin:8px 0}
+.breath{width:150px;height:150px;border-radius:50%;background:var(--mot-soft);border:4px solid var(--mot);margin:16px auto;display:flex;align-items:center;justify-content:center;font-weight:700;transition:transform 4s linear}
+.breath.in{transform:scale(1.35)}
+.kaart svg{width:100%;height:auto;display:block}
+.hide{display:none}
+img.bewijs{width:100%;border:1px solid var(--line);border-radius:10px;margin:10px 0}
+@media (max-width:520px){.cornell{grid-template-columns:1fr}}
+@media print{.nav,header,.noprint{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="nav hide" id="nav"><div class="in" id="navin"></div></div>
+<script>
+'use strict';
+/* ====== instellingen (makkelijk aan te passen) ====== */
+const KEY = 'lerenleren_v1';
+const DATUM = { M1:'2026-11-10', S1:'2026-11-13', P1:'2026-11-17', S2:'2026-11-20', S3:'2026-11-24', M2:'2026-11-27', P2:null };
+const S2_WACHT_DAGEN = 6;   // zoveel dagen na het experiment van S1 kan de test in S2
+const PRODUCT = { M1:'je eerste stap en je als-dan-plan', S1:'een Cornell-blad en je eerste kaarten om jezelf te overhoren', P1:'je examenplanning in de studieplanner', S2:'een schema van je eigen leerstof en een vraag voor je leraar', S3:'een oefenreeks voor je tekortvak en je eigen foutenanalyse', M2:'je examenplan voor de avond ervoor en voor als je blokkeert', P2:'je plan voor juni' };
+const MODNAAM = { mot:'Motivatie', pla:'Plannen', stu:'Studiemethode' };
+
+/* ====== opslag ====== */
+let st;
+const KIJK = /kijk/i.test(location.search);
+function load(){ try{ st = KIJK ? {} : (JSON.parse(localStorage.getItem(KEY)) || {}); }catch(e){ st = {}; } st.me = st.me || {}; st.ses = st.ses || {}; st.exp = st.exp || {}; }
+function save(){ if(KIJK) return; try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+function ses(id){ return st.ses[id] = st.ses[id] || { step:0, a:{} }; }
+load();
+
+/* ====== hulpjes ====== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>');
+const plain = s => String(s ?? '').replace(/\*\*?/g,'');
+const dagen = ['zo','ma','di','wo','do','vr','za'];
+function fmtD(iso){ if(!iso) return ''; const d = new Date(iso+'T12:00'); return dagen[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1); }
+function fmtTs(ts){ const d = new Date(ts); return d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear(); }
+function num(x){ if(x==null) return NaN; const m = String(x).replace(',', '.').match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : NaN; }
+function norm(x){ return String(x||'').toLowerCase().trim().replace(/^(de|het|een)\s+/,'').replace(/[^a-zà-ÿ ]/g,'').trim(); }
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+
+/* voorlezen */
+let voice = null;
+function pickVoice(){ try{ const v = speechSynthesis.getVoices(); voice = v.find(x=>/nl[-_]BE/i.test(x.lang)) || v.find(x=>/^nl/i.test(x.lang)) || null; }catch(e){} }
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text){ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(plain(text)); u.lang = voice ? voice.lang : 'nl-BE'; if(voice) u.voice = voice; u.rate = .92; speechSynthesis.speak(u); }
+
+/* ====== experimentmateriaal ====== */
+const L1 = [['kiatu','schoen'],['mbwa','hond'],['nyumba','huis'],['maji','water'],['chakula','eten'],['mlima','berg'],['ndege','vogel'],['gari','auto']];
+const L2 = [['kiti','stoel'],['paka','kat'],['mti','boom'],['jua','zon'],['mlango','deur'],['samaki','vis'],['kijiko','lepel'],['barabara','weg']];
+const MIX = ['mlango','chakula','paka','gari','jua','kiatu','kijiko','mbwa','samaki','nyumba','barabara','mlima','mti','maji','kiti','ndege'];
+const ALLW = Object.fromEntries([...L1,...L2]);
+const Q = {
+  K1:['Een jas kost € 80. Je krijgt 25 % korting. Wat betaal je?',60,'€ 60'],
+  K2:['Een fiets kost € 300. De prijs stijgt met 10 %. Wat is de nieuwe prijs?',330,'€ 330'],
+  T1:['Na 20 % korting betaal je € 40. Wat was de oorspronkelijke prijs?',50,'€ 50'],
+  T2:['Na een stijging van 10 % kost een ticket € 22. Wat kostte het eerst?',20,'€ 20'],
+  P1:['Een prijs stijgt van € 50 naar € 60. Met hoeveel procent?',20,'20 %'],
+  P2:['Een prijs daalt van € 200 naar € 150. Met hoeveel procent?',25,'25 %'],
+};
+const SETS = { A:['K1','K2','T1','T2','P1','P2'], B:['T1','K1','P2','K2','P1','T2'] };
+const TEST = [['Na 50 % korting kost een spel € 30. Wat kostte het eerst?',60],['Een gsm kost € 400. Je krijgt 15 % korting. Wat betaal je?',340],['Je loon stijgt van € 10 naar € 12 per uur. Met hoeveel procent?',20],['Na een stijging van 25 % kost een abonnement € 50. Wat kostte het eerst?',40]];
+const KRT = [
+  ['Verklaar waarom veel arbeiders in de 19e eeuw arm waren.','R'],
+  ['Benoem twee uitvindingen uit de industriële revolutie.','K'],
+  ['Een arbeider krijgt minder loon. Wat kan hij doen? Gebruik H2 en H3.','T'],
+  ['Wat is een vakbond?','K'],
+  ['Leg het verband tussen de fabrieken en het ontstaan van vakbonden.','R'],
+  ['Bekijk een foto van een fabriek uit 1880. Welke kenmerken van de industriële revolutie herken je?','T'],
+];
+const KRTN = { K:'Kennis', R:'Redeneren', T:'Toepassen' };
+const OPDR = [['Benoem','Geef de naam of het begrip, kort.'],['Beschrijf','Vertel hoe iets eruitziet of verloopt, zonder waarom.'],['Verklaar','Leg uit waarom of hoe iets gebeurt: oorzaak en gevolg.'],['Vergelijk','Geef gelijkenissen én verschillen.'],['Leid af','Trek zelf een besluit uit gegevens: een tekst, tabel of grafiek.']];
+const FOUT = [['G','Niet geleerd','Vroeger starten, terugplannen, spreiden'],['B','Leerstof niet begrepen','Waarom-vragen, uitleggen, hulp vragen'],['L','Vraag verkeerd gelezen of niet begrepen','Opdrachtwoord en kernwoorden onderlijnen'],['T','Te weinig tijd','Oefenen met een timer, eerst wat je zeker kent'],['S','Slordig','De laatste 5 minuten alles nalezen']];
+
+/* ====== inhoud van de sessies ====== */
+const SESSIES = [
+{ id:'M1', mod:'mot', title:'Waarom stel ik uit?', doel:'Je ontdekt waarom je uitstelt en je maakt één taak zo klein dat je morgen kan beginnen.', steps:[
+  { h:'Vandaag', b:[
+    {t:'p', x:'Je werkt ongeveer **20 minuten**. Je doet alles in deze tool. Op het einde maak je een **bewijsblad** en zet je dat in Smartschool.'},
+    {t:'p', x:'Werk rustig. Er zijn geen foute antwoorden: het gaat over jou.'},
+    {t:'text', req:1, id:'taak', label:'Opdracht 1 · Welke taak voor school stel jij nu uit?', ph:'Bijvoorbeeld: mijn samenvatting voor biologie'},
+  ]},
+  { h:'Waarom stel je uit?', b:[
+    {t:'radio', req:1, id:'reden', label:'Opdracht 2 · Kies wat het meest klopt.', opts:[
+      {v:'groot', x:'**Te groot:** ik weet niet waar ik moet beginnen.', fb:'Hak de taak in stukjes van maximaal 15 minuten.'},
+      {v:'vaag', x:'**Te vaag:** "studeren" is geen duidelijke opdracht.', fb:'Maak het concreet: wat, welke pagina, hoe lang?'},
+      {v:'moeilijk', x:'**Te moeilijk of spannend:** ik denk dat het niet lukt.', fb:'Begin met het makkelijkste stukje, of vraag eerst hulp.'},
+      {v:'ver', x:'**Beloning te ver weg:** het levert pas later iets op.', fb:'Haal de beloning dichterbij: afvinken, daarna iets leuks.'},
+    ]},
+    {t:'onthoud', x:'Uitstellen is geen luiheid. Je brein kiest de beloning van nu. Maak het je brein makkelijker.'},
+  ]},
+  { h:'Maak het concreet', b:[
+    {t:'info', h:'Een goede eerste stap', ol:true, items:['heeft een werkwoord dat je kan zien: lezen, schrijven, maken, opzoeken;','zegt precies wat: welke pagina, oefening of titel;','duurt maximaal 15 minuten.']},
+    {t:'p', x:'*Voorbeeld:* niet "Chemie studeren", maar **Chemieboek openen, de titels van hoofdstuk 4 lezen en 3 woorden noteren die ik niet ken (10 min).**'},
+    {t:'text', id:'oef', label:'Opdracht 3 · Maak deze taak concreet: "Nederlands taak maken"', long:true},
+    {t:'reveal', btn:'Toon een voorbeeld', x:'**De taak openen in Smartschool, de opdracht lezen en de eerste vraag beantwoorden (15 min).** Een werkwoord dat je ziet, precies wat, en kort.'},
+  ]},
+  { h:'Mijn eerste stap', b:[
+    {t:'text', req:1, id:'stap', label:'Opdracht 4 · Mijn eerste stap voor de taak die ik uitstel (wat, waar, hoe lang):', long:true},
+    {t:'checks', id:'check', label:'Check je eerste stap.', opts:['Er staat een werkwoord in dat je kan zien.','Er staat precies wat ik doe: pagina, oefening of titel.','Het duurt maximaal 15 minuten.','Ik kan dit morgen starten zonder na te denken.']},
+    {t:'p', x:'Kan je niet alles aanvinken? Pas je eerste stap aan.'},
+  ]},
+  { h:'Mijn plan', b:[
+    {t:'text', req:1, id:'alsdan', label:'Opdracht 5 · Als ik … (vast moment), dan doe ik mijn eerste stap.', ph:'Als ik thuiskom en gegeten heb, dan …'},
+    {t:'info', h:'Toets jezelf in het kort', items:['Je zet vragen over je leerstof op kaarten: in de tool **Toets jezelf** of op papier.','Elke dag 10 minuten: eerst zelf het antwoord zeggen, dan pas kijken.','De tool kiest welke kaarten terugkomen. In M2 heb je dit nodig.']},
+    {t:'link', href:'toets-jezelf.html', x:'Open Toets jezelf'},
+    {t:'thuis', x:'Voer je eerste stap één keer echt uit. Neem er een foto van. Die toon je bij de volgende sessie, of je zet ze in Smartschool.'},
+  ]},
+]},
+{ id:'S1', mod:'stu', title:'Ophalen werkt', doel:'Je doet een experiment met je geheugen en je maakt een blad waarmee je jezelf kan overhoren.', steps:[
+  { h:'Een experiment', b:[
+    {t:'p', x:'Wie studeert door zijn cursus een paar keer te lezen? Vandaag test je of dat werkt. **Jij bent de proefpersoon.**'},
+    {t:'p', x:'Je leert twee lijsten woorden in het Swahili, een taal uit Oost-Afrika. Lijst 1 leer je door te **herlezen**. Lijst 2 leer je door jezelf te **overhoren**. Over een week test je wat er overblijft.'},
+    {t:'info', h:'Eerlijk spelen', items:['Schrijf de woorden niet op en neem geen foto.','Kijk na deze sessie niet meer naar de woorden.','Doe het experiment in één keer: het duurt 9 minuten.']},
+  ]},
+  { h:'Lijst 1 · HERLEZEN', b:[ {t:'w', w:'herlees'} ]},
+  { h:'Lijst 2 · OVERHOREN', b:[ {t:'w', w:'overhoor'} ]},
+  { h:'Mijn voorspelling', b:[
+    {t:'radio', req:1, id:'voorspel', label:'Van welke lijst onthoud ik volgende week het meest?', opts:[{v:'her', x:'De lijst die ik HERLAS'},{v:'ovh', x:'De lijst die ik OVERHOORDE'}]},
+    {t:'scale', id:'zeker', label:'Hoe zeker ben ik? (1 = niet, 5 = heel zeker)', min:1, max:5},
+    {t:'w', w:'s1klok'},
+  ]},
+  { h:'Mijn Cornell-blad', b:[
+    {t:'p', x:'Neem je cursus van je tekortvak. Kies **één titel** uit de les van deze week.'},
+    {t:'info', h:'Zo maak je het', ol:true, items:['**Rechts:** de uitleg in maximaal 5 korte blokjes, in je eigen woorden.','**Links:** bij elk blokje een kernwoord en een vraag. Minstens één vraag begint met "Waarom".','**Onderaan:** een samenvatting in één of twee zinnen.']},
+    {t:'w', w:'cornell', req:1},
+  ]},
+  { h:'Overhoor jezelf', b:[
+    {t:'p', x:'Je leest je blad niet opnieuw. Je kijkt naar de vraag, zegt de uitleg hardop, en kijkt pas dan.'},
+    {t:'w', w:'cornellquiz'},
+    {t:'onthoud', x:'Is een Cornell-blad een samenvatting? Rechts staat wel een korte uitleg. Maar je leest het blad niet opnieuw: je dekt rechts af, kijkt naar links en zegt de uitleg. Zo wordt je blad een toets.'},
+  ]},
+  { h:'Thuis herhalen', b:[
+    {t:'onthoud', x:'Kaartjes leggen de basis: begrippen, feiten, de kern van elke titel en waarom-vragen. Dat is het geraamte van je cursus. Toepassen en lange antwoorden oefen je apart.'},
+    {t:'checks', id:'dekking', label:'Check', opts:['Ik heb voor elke titel of elk leerdoel minstens één kaartje.']},
+    {t:'radio', id:'hoe', label:'Hoe herhaal jij thuis?', opts:[{v:'tool', x:'Met de tool **Toets jezelf**'},{v:'papier', x:'Met **papieren kaartjes** in drie stapeltjes'}]},
+    {t:'link', href:'toets-jezelf.html', x:'Open Toets jezelf'},
+    {t:'info', h:'Zonder gsm: drie stapeltjes', items:['Vraag op een kaartje, antwoord op de achterkant.','**Stapel 1:** elke dag. **Stapel 2:** om de twee dagen. **Stapel 3:** één keer per week.','Wist je het? Een stapel verder. Niet? Terug naar stapel 1.']},
+    {t:'text', req:1, id:'alsdan', label:'Als ik … (vast moment), dan doe ik 10 minuten Toets jezelf.'},
+    {t:'thuis', x:'Zet de vragen van je Cornell-blad in Toets jezelf of op kaartjes. Herhaal ze elke dag 10 minuten. Kom over een week terug voor S2: dan test je de woorden.'},
+  ]},
+]},
+{ id:'P1', mod:'pla', title:'Plan terug naar de examens', doel:'Je maakt een examenplanning die past in de tijd die je echt hebt.', steps:[
+  { h:'Je studieplanner', b:[
+    {t:'p', x:'Open je **studieplanner** in een ander tabblad. Je kreeg er al uitleg over.'},
+    {t:'checks', id:'planner', label:'Vink af wat je gedaan hebt.', opts:['Ik heb een examen ingevoerd als taak met een deadline.','Ik heb één studieblok gepland voor morgen.','Ik weet waar ik mijn herhaaloverzicht vind.']},
+    {t:'info', h:'Let op', items:['De planner bewaart alles op één toestel, in één browser. Wis je je geschiedenis of gebruik je een ander toestel, dan is je planning weg. Kies één toestel.']},
+  ]},
+  { h:'Hoeveel tijd heb ik echt?', b:[
+    {t:'p', x:'Hoeveel **minuten** kan je per dag studeren voor de examens? Trek eerst de tijd af voor taken en toetsen van de lessen die nog lopen. Sport, werk, familie en hobby’s tellen mee: die tijd is er niet. Hou minstens één avond vrij.'},
+    {t:'w', w:'budget', req:1},
+  ]},
+  { h:'Vier regels', b:[
+    {t:'info', h:'Zo plan je', ol:true, items:['**Start bij je tijdsbudget.** Daarbinnen plan je, niet erbuiten.','**Per vak alleen verwerkblokken:** één per hoofdstuk, tijd × 1,5. Het laatste hoofdstuk minstens 3 dagen voor het examen van dat vak.','**Herhalen doe je elke dag:** 10 minuten Toets jezelf, uit verschillende vakken. Binnen een vak de hoofdstukken door elkaar.','**Per vak één slotblok "alles door elkaar"** in de twee dagen voor zijn examen.']},
+    {t:'table', head:['Dag','Verwerken (tijd × 1,5)','Herhalen'], rows:[['ma','Geschiedenis H3 (60 min)','10 min'],['di','Wiskunde H2 (60 min)','10 min'],['wo','Biologie H4 (60 min) · Frans H2 (45 min)','10 min'],['do','Vrije avond','—'],['vr','Chemie H1 (45 min)','10 min'],['za','Wiskunde H3 (60 min) · Nederlands H2 (60 min)','10 min'],['zo','Engels H3 (45 min) · Aardrijkskunde H2 (45 min)','10 min']]},
+    {t:'onthoud', x:'Verwerk je tijdens het jaar na elke les de leerstof? Dan moet je voor de examens vooral nog herhalen, en worden je verwerkblokken korter.'},
+    {t:'info', h:'Ken je Toets jezelf nog niet?', items:['Je zet vragen over je leerstof op kaarten: in de tool of op papier. Elke dag 10 minuten: eerst zelf het antwoord zeggen, dan pas kijken. Zo herhaal je alle vakken samen.']},
+    {t:'link', href:'toets-jezelf.html', x:'Open Toets jezelf'},
+  ]},
+  { h:'Mijn examenplanning', b:[
+    {t:'p', x:'**Stap 1.** Vul per vak in: de naam, de datum van het examen en het aantal hoofdstukken. Begin met je tekortvakken. Het aantal hoofdstukken vind je in de inhoudstafel of de leerstofafbakening.'},
+    {t:'w', w:'vakken', req:1},
+    {t:'info', h:'Past het niet?', items:['Je hebt drie knoppen: **vroeger starten**, **tekortvakken voorrang** geven, of bij sterke vakken **minder verwerken** en vooral herhalen.']},
+  ]},
+  { h:'In de planner', b:[
+    {t:'p', x:'**Stap 2.** Plan de verwerkblokken in de studieplanner, van achter naar voor. Een vak met een laat examen krijgt later zijn blokken.'},
+    {t:'p', x:'**Stap 3.** Plan elke dag 10 minuten Toets jezelf op een vast moment, en per vak één slotblok vlak voor zijn examen.'},
+    {t:'checks', id:'check', label:'Check je planning.', opts:['De planning past in mijn tijdsbudget.','Er staat elke dag een kort herhaalblok.','Het laatste verwerkblok van elk vak ligt minstens 3 dagen voor zijn examen.','Er is elke week minstens één avond vrij.']},
+    {t:'text', req:1, id:'daarom', label:'Mijn budget is te klein, te groot of juist goed. Daarom …', long:true},
+    {t:'thuis', x:'Werk je planning af in de studieplanner. Vink af wat je gedaan hebt: dat heb je nodig na de examens.'},
+  ]},
+]},
+{ id:'S2', mod:'stu', title:'Begrijpen om te onthouden', doel:'Je ziet de uitslag van het experiment en je leert het verschil tussen iets snappen en iets kunnen uitleggen.', steps:[
+  { h:'Terugblik', b:[
+    {t:'radio', req:1, id:'thuis', label:'Hoeveel dagen deed je deze week Toets jezelf?', opts:[{v:'0', x:'0 dagen'},{v:'12', x:'1 of 2 dagen'},{v:'3', x:'3 dagen of meer'}]},
+    {t:'p', x:'Neem een **schermafbeelding** van je weekteller in Toets jezelf, of een foto van je kaartjes. Die zet je samen met je bewijsblad in Smartschool.'},
+  ]},
+  { h:'De uitslag van het experiment', b:[ {t:'w', w:'woordtest'} ]},
+  { h:'Snap ik het, of kan ik het uitleggen?', b:[
+    {t:'scale', id:'voor', label:'Hoe goed snap jij hoe een rits werkt? (1 = niet, 7 = heel goed)', min:1, max:7},
+    {t:'text', req:1, id:'rits', label:'Leg uit hoe een rits werkt. Zo precies dat iemand die nog nooit een rits zag, het snapt. Vraag jezelf telkens: hoe dan?', long:true},
+    {t:'scale', id:'na', label:'Hoe goed snap je het nu? (1 tot 7)', min:1, max:7},
+    {t:'reveal', btn:'Toon de uitleg', x:'Aan elke kant zitten tandjes met een bolletje en een putje. Het schuifje heeft de vorm van een Y. Het duwt de tandjes van links en rechts schuin naar elkaar, zodat elk bolletje in het putje van de overkant klikt. Trek je het schuifje terug, dan duwt het middenstuk de tandjes weer uit elkaar.'},
+    {t:'p', x:'*Iets klinkt logisch als je het leest. Pas als je het moet uitleggen, merk je wat je echt weet. Dat heet **schijnbegrip**.*'},
+  ]},
+  { h:'Een tekst begrijpen', b:[
+    {t:'info', h:'De Zenne onder Brussel', items:null, x:'Door Brussel stroomt een rivier: de Zenne. Vroeger stroomde ze open door de stad. In de 19e eeuw kwamen er steeds meer mensen in Brussel wonen. Zij gooiden hun afval en hun rioolwater in de rivier. Het water werd vuil en het stonk. Veel mensen werden ziek, bijvoorbeeld van cholera. Na veel regen liep de Zenne over en stonden straten onder water.\n\nDaarom besliste burgemeester Jules Anspach dat de rivier onder de grond moest. Tussen 1867 en 1871 kreeg de Zenne een dak van steen. Bovenop kwamen brede lanen, zoals de Anspachlaan. Vandaag zie je de Zenne bijna nergens meer in de stad.'},
+    {t:'info', h:'Vier vragen bij elke titel uit je cursus', ol:true, items:['**Wat betekent het?** Leg het begrip uit met de vaktaal uit je cursus en een voorbeeld. *(kennis)*','**Hoe hangt het samen?** Aanleiding, oorzaak, gevolg. Of de stappen van een proces. *(redeneren)*','**Kan ik het gebruiken?** In een nieuwe situatie, op een kaart, een bron of een oefening. *(toepassen)*','**Waar zie ik dit vandaag, of in een ander vak?** *(verbinden)*']},
+    {t:'p', x:'**Vraag 1 en 2 op de Zenne-tekst:** wat betekent "overdekt"? Wat was de oorzaak, wat gebeurde er, en wat was het gevolg? Zeg het hardop. Zoek de zin met *daarom*.'},
+    {t:'text', id:'q3', label:'Vraag 3 · Een andere stad heeft een vuile rivier die vaak overstroomt. Wat zou die stad kunnen doen? Wat is een nadeel?', long:true},
+    {t:'text', id:'q4', label:'Vraag 4 · Waar zie je vandaag nog een probleem met water in Brussel?', long:true},
+    {t:'reveal', btn:'Toon de antwoorden', x:'**1.** De rivier kreeg een dak: ze stroomt nu onder de grond. **2.** Oorzaak: vuil water, ziekte en overstromingen → gebeurtenis: de Zenne wordt overdekt (1867–1871) → gevolg: brede lanen, je ziet de rivier bijna niet meer. Bewijs: "Daarom besliste burgemeester Jules Anspach …" **3.** Bijvoorbeeld: het afval en rioolwater apart afvoeren en zuiveren, of de rivier ook overdekken. Nadeel: duur, of de rivier verdwijnt uit het zicht. **4.** Bijvoorbeeld: na hevige regen lopen straten en kelders nog onder water.'},
+    {t:'onthoud', x:'Kan je het uitleggen zonder te kijken, en klopt het met je cursus? Dan begrijp je het.'},
+  ]},
+  { h:'Mijn eigen leerstof', b:[
+    {t:'radio', req:1, id:'soort', label:'Neem je Cornell-blad van S1. Wat is je vak?', opts:[
+      {v:'zaak', x:'Geschiedenis, aardrijkskunde, economie, biologie …', fb:'Beantwoord de vier vragen voor één titel. Vraag 4 is de moeilijkste: het hoeft niet perfect.'},
+      {v:'taal', x:'Frans, Engels, Nederlands …', fb:'Bij een taal worden het deze vier vragen: **1 · Ken ik het?** Woorden in twee richtingen, juist geschreven, met lidwoord. **2 · Waarom deze vorm?** De regel met een voorbeeld: "Ik gebruik *does*, want het onderwerp is *he*." **3 · Kan ik het gebruiken?** Maak zelf een nieuwe zin. **4 · Lukt het in een tekst die ik niet ken?** Een oude toets, een tekst lezen of beluisteren. Tip: vergelijk met je thuistaal.'},
+      {v:'ex', x:'Wiskunde, fysica of chemie', fb:'Neem een uitgewerkt voorbeeld uit je cursus. **1 · Wat betekent elke grootheid?** **2 · Waarom klopt elke stap?** Schrijf: "Ik doe dit omdat …". **3 · Lukt een nieuwe oefening zonder voorbeeld?** **4 · Herken ik het type tussen andere oefeningen?**'},
+    ]},
+    {t:'text', req:1, id:'schema', label:'Mijn antwoorden op de vier vragen (of mijn stappen). Op papier? Zet er dan een foto van in Smartschool.', long:true},
+    {t:'checks', id:'gecontr', label:'Controleer', opts:['Ik vergeleek mijn antwoorden met mijn cursus. Ze kloppen.']},
+    {t:'text', id:'leraar', label:'Klopt het niet of snap ik het niet? Mijn vraag voor de leraar:'},
+    {t:'p', x:'Zet vraag 2 of 4 links op je Cornell-blad en in Toets jezelf.'},
+  ]},
+  { h:'Leg het uit', b:[
+    {t:'p', x:'Leg je Cornell-blad **1 minuut hardop** uit, zonder te kijken. Vraag jezelf daarna: "Hoe dan?" Kijk in je cursus of het klopte.'},
+    {t:'w', w:'timer', min:1},
+    {t:'info', h:'Zinnen die helpen', items:['Dat komt doordat … · Daardoor … · Als …, dan … · Het verschil is …']},
+    {t:'text', req:1, id:'niet', label:'Wat ik nog niet kon uitleggen:', long:true},
+    {t:'thuis', x:'Leg je Cornell-blad in 2 minuten uit aan iemand thuis. Laat die persoon "hoe dan?" vragen.'},
+  ]},
+]},
+{ id:'S3', mod:'stu', title:'Ken je het echt?', doel:'Je ontdekt waarom oefeningen door elkaar beter voorbereiden op een examen, en wat je met je fouten doet.', steps:[
+  { h:'Haal op zonder te kijken', b:[
+    {t:'radio', req:1, id:'thuis', label:'Hoeveel dagen deed je deze week Toets jezelf?', opts:[{v:'0', x:'0 dagen'},{v:'12', x:'1 of 2 dagen'},{v:'3', x:'3 dagen of meer'}]},
+    {t:'text', id:'h1', label:'Waarom werkt jezelf overhoren beter dan herlezen?', long:true},
+    {t:'p', x:'Zeg het antwoord op deze twee vragen hardop, zonder te kijken: **Wat zet je links op een Cornell-blad, en waarom?** en **Hoe weet je of je iets echt begrijpt?**'},
+    {t:'reveal', btn:'Toon de antwoorden', x:'**1.** Overhoren laat je ophalen, en wat je ophaalt wordt sterker. Herlezen voelt bekend, maar je haalt niets op. **2.** Kernwoorden en vragen, zodat je jezelf kan overhoren. **3.** Als je het zonder kijken kan uitleggen, ook als iemand "waarom?" vraagt.'},
+  ]},
+  { h:'Het oefenexperiment', b:[ {t:'w', w:'oefenset'} ]},
+  { h:'De test', b:[ {t:'w', w:'test4'} ]},
+  { h:'Drie soorten vragen', b:[
+    {t:'table', head:['Soort','Hoe herken je ze?','Zo oefen je'], rows:[['**Kennis**','Het antwoord staat zo in je cursus. *Benoem, wat is …?*','Kaartjes, elke dag 10 minuten'],['**Redeneren**','Je moet uitleggen waarom of hoe. *Verklaar, vergelijk, waarom …?*','Hardop uitleggen, nakijken in je cursus'],['**Toepassen**','Een situatie, oefening of bron die je nog niet zag. *Bereken, los op, wat gebeurt er als …?* Ook: verbinden met vandaag of een ander vak.','Nieuwe oefeningen zonder oplossing, oude toetsen, door elkaar']]},
+    {t:'p', x:'**Oefen:** welke soort vraag is het?'},
+    {t:'w', w:'krt'},
+    {t:'onthoud', x:'Kaartjes zorgen dat je de leerstof kent. Een toets vraagt ook redeneren en toepassen. Oefen dus alle drie.'},
+  ]},
+  { h:'Mijn eigen oefenreeks', b:[
+    {t:'info', h:'Zo maak je je eigen reeks', items:['Neem vragen uit minstens drie hoofdstukken. Elke soort minstens twee keer.','Zet ze door elkaar: nooit twee keer dezelfde soort na elkaar.','**Wiskunde, fysica, chemie:** kennis = een formule of definitie, redeneren = waarom een stap klopt, toepassen = een nieuwe oefening.']},
+    {t:'w', w:'reeks'},
+  ]},
+  { h:'Leer uit je fouten', b:[
+    {t:'p', x:'Neem je recente toets van je tekortvak. Zet bij elke fout een letter. Tel hieronder.'},
+    {t:'text', req:1, id:'vak', label:'Vak en score'},
+    {t:'w', w:'fouten'},
+    {t:'info', h:'Twijfel je?', items:['Vraag jezelf: "Kon ik dit thuis zonder kijken uitleggen?" Nee = niet geleerd of leerstof niet begrepen.']},
+    {t:'w', w:'krtcount'},
+    {t:'info', h:'Lees je toets: zo ziet de volgende eruit', items:['Tel hoeveel vragen van elke soort op je toets stonden. Zo oefen je voor de volgende toets.','Weet je het niet? Vraag het je leraar: **"Komen er vooral vragen om te kennen, uit te leggen of toe te passen?"**']},
+    {t:'text', id:'soortentoets', label:'Op mijn toets stonden zoveel vragen: kennis … · redeneren … · toepassen …'},
+    {t:'num', id:'nietkaart', label:'Hoeveel fouten gingen over iets dat niet op je kaartjes stond? Maak daar nieuwe kaartjes van.'},
+    {t:'text', id:'opdr', label:'Welke opdrachtwoorden op je toets waren moeilijk?'},
+    {t:'text', id:'vraag', label:'Over deze fout vraag ik deze week uitleg aan:'},
+  ]},
+  { h:'Mijn plan', b:[
+    {t:'text', req:1, id:'plan', label:'Op deze soort vragen oefen ik meer, en zo:', long:true},
+    {t:'thuis', x:'Maak de oefenreeks die je net opschreef, zonder te kijken. Kijk daarna na in je cursus.'},
+  ]},
+]},
+{ id:'M2', mod:'mot', title:'Stress, punten en zelfvertrouwen', doel:'Je maakt een plan voor examenstress: voor de avond ervoor en voor als je blokkeert.', steps:[
+  { h:'Terugblik', b:[
+    {t:'radio', req:1, id:'thuis', label:'Hoeveel dagen werkte je de voorbije week aan je eerste stap of aan Toets jezelf?', opts:[{v:'0', x:'0 dagen'},{v:'12', x:'1 of 2 dagen'},{v:'3', x:'3 dagen of meer'}]},
+    {t:'text', id:'hielp', label:'Wat hielp, of wat zat in de weg?', long:true},
+    {t:'scale', id:'stress1', label:'Hoeveel stress verwacht je voor de examens? (1 = geen, 10 = heel veel)', min:1, max:10},
+  ]},
+  { h:'Hoe leer jij?', b:[
+    {t:'radio', id:'hoek', label:'Kies de zin die het meest bij jou past. Niet perfect, wel het meest.', opts:[
+      {v:'1', x:'Ik leer vooral omdat ik het interessant vind.', fb:'Wie snapt waarom, heeft minder stress. Dat kan je zelf opwekken met waarom-vragen.'},
+      {v:'2', x:'Ik leer vooral voor punten.', fb:'Punten als doel werkt, tot het tegenvalt. Dan helpt het om te weten waarom je het doet.'},
+      {v:'3', x:'Ik leer weinig en maak me weinig zorgen.', fb:'Rustig is goed, maar je merkt pas op het examen of het genoeg was. Toets jezelf zegt het je vroeger.'},
+      {v:'4', x:'Ik leer veel, maar heb veel stress.', fb:'Hard werken, maar de stress kost punten. Daar gaat de rest van deze sessie over.'},
+    ]},
+    {t:'p', x:'*Je kan van zin veranderen. Dat is net de bedoeling.*'},
+  ]},
+  { h:'Stellingen', b:[
+    {t:'radio', id:'st1', label:'"Hoe meer stress, hoe beter ik presteer."', opts:[{v:'ja', x:'Akkoord', fb:'Een beetje spanning helpt je focussen. Veel stress blokkeert het ophalen: je weet het, maar het komt niet.'},{v:'nee', x:'Niet akkoord', fb:'Een beetje spanning helpt je focussen. Veel stress blokkeert het ophalen: je weet het, maar het komt niet.'}]},
+    {t:'radio', id:'st2', label:'"Mijn punten zeggen wie ik ben."', opts:[{v:'ja', x:'Akkoord', fb:'Je punten zeggen iets over je voorbereiding, op één moment. Niet over wie je bent of hoe slim je bent.'},{v:'nee', x:'Niet akkoord', fb:'Je punten zeggen iets over je voorbereiding, op één moment. Niet over wie je bent of hoe slim je bent.'}]},
+    {t:'radio', id:'st3', label:'"Fouten maken betekent dat ik het niet kan."', opts:[{v:'ja', x:'Akkoord', fb:'Fouten tonen wat je nog niet kan. Zet er altijd "nog" achter.'},{v:'nee', x:'Niet akkoord', fb:'Fouten tonen wat je nog niet kan. Zet er altijd "nog" achter.'}]},
+    {t:'onthoud', x:'Een black-out betekent niet dat je het niet weet. Wie zichzelf vaak overhoort, vindt de weg naar de kennis sneller terug, ook onder stress.'},
+  ]},
+  { h:'Oefen je ademhaling', b:[
+    {t:'p', x:'Leg je gsm of pen neer. Adem 4 tellen in en 4 tellen uit, drie keer. Dit voelt raar. Wie het nooit oefent, doet het op het examen ook niet.'},
+    {t:'w', w:'adem'},
+  ]},
+  { h:'Mijn examenplan', b:[
+    {t:'checks', id:'avond', label:'De avond voor het examen doe ik:', opts:['10 minuten Toets jezelf op mijn moeilijkste kaarten','geen nieuwe leerstof meer','mijn gsm weg op een vast uur','op tijd slapen']},
+    {t:'text', id:'uur', label:'Gsm weg om … uur, slapen om … uur'},
+    {t:'checks', id:'ochtend', label:'De ochtend van het examen:', opts:['ontbijten, ook zonder honger','mijn materiaal de avond ervoor klaarleggen','aan de schoolpoort niet meer over de leerstof praten']},
+    {t:'info', h:'Als ik blokkeer op het examen', ol:true, items:['Pen neerleggen.','Drie keer rustig ademen: 4 tellen in, 4 tellen uit.','Vraag overslaan, sterretje zetten, verder.','Op het einde terugkomen.']},
+    {t:'text', req:1, id:'blok', label:'Als ik blokkeer, dan …'},
+    {t:'scale', id:'stress2', label:'Hoeveel stress verwacht je nu? (1 tot 10)', min:1, max:10},
+    {t:'thuis', x:'Druk je bewijsblad af of zet het als achtergrond op je gsm. Kijk ernaar de avond voor elk examen.'},
+  ]},
+]},
+{ id:'P2', mod:'pla', title:'Terugblik: plan, aanpak en resultaat', doel:'Je zoekt uit wat je aanpak opleverde en wat je vanaf nu verandert.', steps:[
+  { h:'Doel en resultaat', b:[
+    {t:'text', id:'vak', label:'Vak'}, {t:'num', id:'doel', label:'Mijn doel (%)'}, {t:'num', req:1, id:'res', label:'Mijn resultaat (%)'},
+    {t:'onthoud', x:'Vandaag beoordelen we niet, we proberen te begrijpen: wat heb je gedaan, en wat leverde het op?'},
+  ]},
+  { h:'Plan en werkelijkheid', b:[
+    {t:'num', id:'gepland', label:'Hoeveel blokken had ik gepland? (kijk in je studieplanner)'},
+    {t:'num', id:'gedaan', label:'Hoeveel blokken deed ik echt?'},
+    {t:'text', id:'niet', label:'Welke blokken deed ik niet, en waarom?', long:true},
+    {t:'text', id:'wel', label:'Wat lukte wel?', long:true},
+  ]},
+  { h:'Mijn fouten indelen', b:[
+    {t:'p', x:'Neem je examen. Zet bij elke fout een letter. Tel hieronder.'},
+    {t:'w', w:'fouten'},
+    {t:'info', h:'Twijfel je?', items:['Vraag jezelf: "Kon ik dit thuis zonder kijken uitleggen?" Nee = niet geleerd of leerstof niet begrepen.']},
+  ]},
+  { h:'Opdrachtwoorden', b:[
+    {t:'p', x:'Wat moet je doen bij elk opdrachtwoord? Kies.'},
+    {t:'w', w:'opdracht'},
+  ]},
+  { h:'Mijn plan', b:[
+    {t:'info', h:'Een gewoonte die meteen start', items:['Na elke les 10 minuten verwerken: een samenvatting, een Cornell-blad, vragen of kaartjes. Steek de vragen in Toets jezelf. Wie zo bijhoudt, moet in juni vooral nog herhalen.']},
+    {t:'text', id:'houd', label:'Dit houd ik:', long:true},
+    {t:'text', req:1, id:'anders', label:'Dit verander ik vanaf deze week:', long:true},
+    {t:'text', id:'start', label:'Ik start met studeren voor juni op (datum):'},
+  ]},
+]},
+];
+const BYID = Object.fromEntries(SESSIES.map(s=>[s.id,s]));
+
+/* ====== widgets ====== */
+const W = {};
+let tick = null;
+function stopTick(){ if(tick){ clearInterval(tick); tick = null; } }
+function countdown(sec, el, done){ stopTick(); if(KIJK) sec = Math.min(sec, 3); const end = Date.now()+sec*1000; const f = () => { const r = Math.max(0, Math.round((end-Date.now())/1000)); el.textContent = Math.floor(r/60)+':'+String(r%60).padStart(2,'0'); if(r<=0){ stopTick(); done(); } }; f(); tick = setInterval(f, 250); }
+function listTable(list){ return '<table class="t"><tr><th>Swahili</th><th>Nederlands</th></tr>'+list.map(([a,b])=>`<tr><td><b>${a}</b></td><td>${b}</td></tr>`).join('')+'</table>'; }
+function expLists(){ if(!st.exp.her){ st.exp.her = Math.random()<.5 ? 1 : 2; save(); } return st.exp.her===1 ? {her:L1, ovh:L2} : {her:L2, ovh:L1}; }
+
+W.herlees = { render(a){ return a.herDone ? '<p class="good">✓ Klaar. De lijst is weg. Ga verder naar lijst 2.</p>' : '<p>Je krijgt <b>4 minuten</b>. Lees de woorden en hun betekenis, zo vaak je wil. Dek niets af.</p><div id="wz"><button class="btn wide" id="go">Start (4 minuten)</button></div>'; },
+  bind(a){ const go = $('#go'); if(!go) return; go.onclick = () => { const L = expLists(); $('#wz').innerHTML = '<div class="timer" id="tm"></div>'+listTable(L.her); countdown(240, $('#tm'), () => { a.herDone = true; save(); show(); }); }; },
+  done(a){ return !!a.herDone; }, sum(a){ return a.herDone ? ['Lijst HERLEZEN: gedaan (4 min)'] : []; } };
+
+W.overhoor = { render(a){ if(a.ovhDone) return '<p class="good">✓ Klaar. Ga verder naar je voorspelling.</p>'; if(!a.herDone) return '<p class="bad">Doe eerst lijst 1.</p>'; return '<p><b>1 minuut</b> lezen. Daarna <b>3 minuten</b> jezelf overhoren: je ziet het woord, je zegt de betekenis, en pas dan kijk je.</p><div id="wz"><button class="btn wide" id="go">Start</button></div>'; },
+  bind(a){ const go = $('#go'); if(!go) return; go.onclick = () => { const L = expLists(); $('#wz').innerHTML = '<p class="muted">Lezen</p><div class="timer" id="tm"></div>'+listTable(L.ovh);
+      countdown(60, $('#tm'), () => { let deck = shuffle(L.ovh), i = 0;
+        $('#wz').innerHTML = '<p class="muted">Overhoren</p><div class="timer" id="tm"></div><div class="flash"><div class="w" id="fw"></div><div class="a" id="fa"></div></div><div class="row"><button class="btn ghost" id="toon" style="flex:1">Toon</button></div><div class="row hide" id="kn"><button class="btn" id="ja" style="flex:1">Wist ik</button><button class="btn ghost" id="nee" style="flex:1">Nog niet</button></div>';
+        const card = () => { if(i>=deck.length){ deck = shuffle(L.ovh); i = 0; } $('#fw').textContent = deck[i][0]; $('#fa').textContent = ''; $('#toon').parentElement.classList.remove('hide'); $('#kn').classList.add('hide'); };
+        $('#toon').onclick = () => { $('#fa').textContent = deck[i][1]; $('#toon').parentElement.classList.add('hide'); $('#kn').classList.remove('hide'); };
+        $('#ja').onclick = () => { i++; card(); }; $('#nee').onclick = () => { deck.splice(i+1+Math.floor(Math.random()*2), 0, deck[i]); i++; card(); };
+        card(); countdown(180, $('#tm'), () => { a.ovhDone = true; st.exp.at = Date.now(); save(); show(); }); }); }; },
+  done(a){ return !!a.ovhDone; }, sum(a){ return a.ovhDone ? ['Lijst OVERHOREN: gedaan (1 + 3 min)'] : []; } };
+
+W.s1klok = { render(){ if(!st.exp.at) return ''; const d = new Date(st.exp.at + S2_WACHT_DAGEN*864e5); return `<div class="box"><b class="h">Volgende stap</b>De test van de woorden kan vanaf <b>${dagen[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}</b>, in S2.</div>`; } };
+
+W.cornell = { render(a){ const r = a.corn || (a.corn = Array.from({length:5},()=>['',''])); return `<label class="l">Titel uit mijn cursus</label><input type="text" data-k="ctitel" value="${esc(a.ctitel)}">`+
+    r.map((x,i)=>`<label class="l">Blokje ${i+1}</label><div class="cornell"><textarea data-c="${i}" data-j="0" placeholder="Kernwoord en vraag">${esc(x[0])}</textarea><textarea data-c="${i}" data-j="1" placeholder="Uitleg in mijn eigen woorden">${esc(x[1])}</textarea></div>`).join('')+
+    `<label class="l">Samenvatting in één of twee zinnen</label><textarea data-k="csam">${esc(a.csam)}</textarea>
+    <label class="opt ${a.cpapier?'on':''}"><input type="checkbox" data-k="cpapier" ${a.cpapier?'checked':''}><span>Ik maak mijn Cornell-blad <b>op papier</b>. Ik zet er een foto van in Smartschool, samen met mijn bewijsblad.</span></label>`; },
+  bind(a){ document.querySelectorAll('[data-c]').forEach(t => t.oninput = () => { a.corn[t.dataset.c][t.dataset.j] = t.value; save(); }); },
+  sum(a){ const o = []; if(a.ctitel) o.push('Titel: '+a.ctitel); (a.corn||[]).forEach(x=>{ if(x[0]||x[1]) o.push('• '+x[0]+'  →  '+x[1]); }); if(a.csam) o.push('Samenvatting: '+a.csam); if(a.cpapier) o.push('Cornell-blad op papier (foto in Smartschool)'); return o; } };
+
+W.cornellquiz = { render(a){ const q = (a.corn||[]).filter(x=>x[0].trim()); if(!q.length) return a.cpapier ? '<p>Je werkt op papier: dek de rechterkant af, lees de vragen links en zeg de uitleg hardop. Zet een sterretje bij wat nog niet lukte.</p>' : '<p class="bad">Vul eerst links op je Cornell-blad vragen in.</p>';
+    return '<div id="cq"></div>'; },
+  bind(a){ const box = $('#cq'); if(!box) return; const q = (a.corn||[]).map((x,i)=>[x,i]).filter(([x])=>x[0].trim()); a.ster = a.ster || {};
+    box.innerHTML = q.map(([x,i])=>`<div class="q"><b>${esc(x[0])}</b><div class="hide" id="u${i}" style="margin-top:6px">${esc(x[1])||'<i class="muted">(geen uitleg)</i>'}</div><div class="row" style="margin-top:8px"><button class="btn ghost" data-u="${i}">Toon uitleg</button><button class="btn plain" data-s="${i}">${a.ster[i]?'★ lukte nog niet':'☆ lukte nog niet'}</button></div></div>`).join('');
+    box.querySelectorAll('[data-u]').forEach(b => b.onclick = () => $('#u'+b.dataset.u).classList.remove('hide'));
+    box.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { a.ster[b.dataset.s] = !a.ster[b.dataset.s]; save(); b.textContent = a.ster[b.dataset.s]?'★ lukte nog niet':'☆ lukte nog niet'; }); },
+  sum(a){ const n = Object.values(a.ster||{}).filter(Boolean).length; return (a.corn||[]).some(x=>x[0].trim()) ? ['Zelf overhoord. Lukte nog niet: '+n+' vraag/vragen'] : []; } };
+
+W.budget = { render(a){ const b = a.bud || (a.bud = ['','','','','','','']); const d = ['ma','di','wo','do','vr','za','zo'];
+    return '<div class="row" style="gap:6px">'+d.map((x,i)=>`<div style="flex:1;min-width:70px"><label class="l" style="margin-top:4px">${x}</label><input type="number" min="0" step="5" inputmode="numeric" data-b="${i}" value="${esc(b[i])}"></div>`).join('')+'</div><p id="btot" class="big"></p>'; },
+  bind(a){ const f = () => { const t = a.bud.reduce((s,x)=>s+(num(x)||0),0); a.budU = Math.round(t/6)/10; $('#btot').textContent = 'Totaal: '+String(a.budU).replace('.',',')+' uur per week'; save(); };
+    document.querySelectorAll('[data-b]').forEach(t => t.oninput = () => { a.bud[t.dataset.b] = t.value; f(); }); f(); },
+  sum(a){ return a.budU ? ['Tijdsbudget: '+String(a.budU).replace('.',',')+' uur per week'] : []; } };
+
+W.vakken = { render(a){ const v = a.vak || (a.vak = Array.from({length:3},()=>['','',''])); return '<div id="vk">'+v.map((r,i)=>`<div class="q"><div class="row"><input type="text" placeholder="Vak" data-v="${i}" data-j="0" value="${esc(r[0])}" style="flex:2;min-width:140px"><input type="date" data-v="${i}" data-j="1" value="${esc(r[1])}" style="flex:2;min-width:140px"><input type="number" min="0" placeholder="Hoofdst." data-v="${i}" data-j="2" value="${esc(r[2])}" style="flex:1;min-width:90px"></div><div class="small muted" id="vl${i}"></div></div>`).join('')+'</div>'+(v.length<12?'<button class="btn ghost" id="vadd">+ Vak toevoegen</button>':'')+'<div class="box" id="vres"></div>'; },
+  bind(a){ const f = () => { let nodig = 0, eerste = null;
+      a.vak.forEach((r,i) => { const el = $('#vl'+i); if(r[1]){ const d = new Date(r[1]+'T12:00'); d.setDate(d.getDate()-3); el.textContent = 'Laatste verwerkblok vóór '+dagen[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1); if(!eerste || r[1]<eerste) eerste = r[1]; } else el.textContent = ''; nodig += num(r[2])||0; });
+      const bud = ses('P1').a.budU || 0; let html = `<b class="h">Past het?</b>Ik heb <b>${nodig} uur</b> nodig (aantal hoofdstukken × 1 uur).`;
+      if(eerste){ const wk = Math.max(0, (new Date(eerste+'T12:00') - Date.now())/6048e5); const heb = Math.round(bud*wk*10)/10; a.nodig = nodig; a.heb = heb;
+        html += ` Tot het eerste examen zijn er nog <b>${String(Math.round(wk*10)/10).replace('.',',')} weken</b>. Mijn budget × aantal weken = <b>${String(heb).replace('.',',')} uur</b>.<br>` + (bud ? (heb >= nodig ? '<span class="good">Het past.</span>' : '<span class="bad">Het past niet. Gebruik een van de drie knoppen hieronder.</span>') : '<span class="muted">Vul eerst je tijdsbudget in (vorige stap).</span>'); }
+      $('#vres').innerHTML = html; save(); };
+    document.querySelectorAll('[data-v]').forEach(t => t.oninput = () => { a.vak[t.dataset.v][t.dataset.j] = t.value; f(); }); const ad = $('#vadd'); if(ad) ad.onclick = () => { a.vak.push(['','','']); save(); const y = scrollY; show(); scrollTo(0,y); }; f(); },
+  sum(a){ const o = (a.vak||[]).filter(r=>r[0]).map(r=>'• '+r[0]+(r[1]?' · examen '+fmtD(r[1]):'')+(r[2]?' · '+r[2]+' hoofdstukken':'')); if(a.nodig!=null) o.push('Nodig: '+a.nodig+' uur · beschikbaar: '+String(a.heb).replace('.',',')+' uur'); return o; } };
+
+W.woordtest = { render(a){ const s1 = ses('S1').a; if(!s1.ovhDone || !st.exp.at) return KIJK ? '<p class="muted">Kijkmodus: doe eerst het experiment in S1 (de timers duren hier 3 seconden), dan verschijnt hier de woordtest.</p>' : '<p>Je deed het experiment van S1 niet (of op een ander toestel). Sla deze stap over.</p>';
+    const open = st.exp.at + S2_WACHT_DAGEN*864e5; if(Date.now() < open && !a.test && !KIJK){ const d = new Date(open); return `<p>De test kan pas vanaf <b>${dagen[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}</b>: er moet een week tussen zitten. Ga al verder met de volgende stappen en kom dan terug.</p>`; }
+    if(a.test) return W.woordtest.res(a);
+    return '<p>Schrijf bij elk woord de betekenis. Weet je het niet, laat dan leeg. Niet spieken: het gaat om de uitslag.</p>'+MIX.map((w,i)=>`<div class="row" style="margin:6px 0"><b style="flex:1">${w}</b><input type="text" data-w="${i}" style="flex:2" autocomplete="off"></div>`).join('')+'<button class="btn wide" id="kijk" style="margin-top:10px">Kijk na</button>'; },
+  res(a){ const t = a.test, pv = ses('S1').a.voorspel; const win = t.ovh > t.her ? 'ovh' : t.her > t.ovh ? 'her' : null;
+    return `<table class="t"><tr><th>Lijst</th><th>Score</th></tr><tr><td>HERLEZEN</td><td><b>${t.her} / 8</b></td></tr><tr><td>OVERHOREN</td><td><b>${t.ovh} / 8</b></td></tr></table>`+
+      `<p>Je voorspelde: <b>${pv==='her'?'herlezen':pv==='ovh'?'overhoren':'—'}</b>. ${win ? (win===pv ? 'Dat klopte.' : 'Dat klopte niet.') : 'Je scoorde gelijk.'}</p>`+(win!=='ovh'?'<div class="box">Bij jou won overhoren niet. Met acht woorden speelt toeval mee. Bij de meeste mensen wint overhoren wel, vooral na een week. Test het zelf met je eigen leerstof.</div>':'')+
+      `<div class="box onthoud"><div class="k">★ ONTHOUD</div><b>Herkennen is niet hetzelfde als onthouden. Jezelf overhoren voelt moeilijker, en net daardoor onthoud je het. En je deed net iets slims: na een week opnieuw ophalen. Dat is spreiden.</b></div>`; },
+  bind(a){ const k = $('#kijk'); if(!k) return; k.onclick = () => { const L = expLists(); const her = new Set(L.her.map(x=>x[0])); let h = 0, o = 0;
+      document.querySelectorAll('[data-w]').forEach(t => { const w = MIX[t.dataset.w]; if(norm(t.value) && norm(t.value) === norm(ALLW[w])){ if(her.has(w)) h++; else o++; } });
+      a.test = {her:h, ovh:o}; save(); show(); }; },
+  done(a){ return true; }, sum(a){ return a.test ? ['Woordtest: HERLEZEN '+a.test.her+'/8 · OVERHOREN '+a.test.ovh+'/8'] : ['Woordtest: niet gedaan']; } };
+
+W.timer = { render(a,b){ return `<div class="timer" id="tm">${b.min}:00</div><button class="btn wide ghost" id="go">Start</button>`; }, bind(a,b){ $('#go').onclick = () => countdown(b.min*60, $('#tm'), () => { $('#tm').textContent = 'Klaar!'; }); } };
+
+W.oefenset = { render(a){ if(!a.set){ a.set = Math.random()<.5 ? 'A' : 'B'; save(); } a.oef = a.oef || {};
+    return `<p>Je krijgt <b>oefenset ${a.set}</b>. Maak de vragen in deze volgorde. Rekenmachine mag. Druk na elke vraag op Controleer.</p>`+SETS[a.set].map((k,i)=>{ const r = a.oef[i];
+      return `<div class="q"><b>${i+1}.</b> ${esc(Q[k][0])}<div class="row" style="margin-top:8px"><input type="text" inputmode="decimal" data-o="${i}" value="${esc(r?r.v:'')}" ${r?'disabled':''}><button class="btn ghost" data-oc="${i}" ${r?'disabled':''}>Controleer</button></div>${r?`<p class="${r.ok?'good':'bad'}">${r.ok?'Juist':'Niet juist. Het antwoord is '+Q[k][2]+'.'}</p>`:''}</div>`; }).join(''); },
+  bind(a){ document.querySelectorAll('[data-oc]').forEach(b => b.onclick = () => { const i = b.dataset.oc, k = SETS[a.set][i], v = document.querySelector(`[data-o="${i}"]`).value; a.oef[i] = {v, ok: Math.abs(num(v)-Q[k][1]) < .01}; save(); show(); }); },
+  done(a){ return Object.keys(a.oef||{}).length === 6; },
+  sum(a){ const n = Object.values(a.oef||{}).filter(r=>r.ok).length; return a.set ? ['Oefenset '+a.set+': '+n+'/6 juist'] : []; } };
+
+W.test4 = { render(a){ if(!W.oefenset.done(a)) return '<p class="bad">Maak eerst de oefenset in de vorige stap.</p>'; const done = !!a.t4;
+    let h = '<p>Voor iedereen dezelfde vier vragen. Rekenmachine mag. Kijk pas na als je alles hebt ingevuld.</p>'+TEST.map(([q,ans],i)=>{ const v = a.t4v ? a.t4v[i] : ''; const ok = done && Math.abs(num(v)-ans) < .01;
+      return `<div class="q"><b>${i+1}.</b> ${esc(q)}<input type="text" inputmode="decimal" data-t="${i}" value="${esc(v)}" ${done?'disabled':''} style="margin-top:8px">${done?`<p class="${ok?'good':'bad'}">${ok?'Juist':'Niet juist. Het antwoord is '+(i===2?ans+' %':'€ '+ans)+'.'}</p>`:''}</div>`; }).join('');
+    if(!done) return h+'<button class="btn wide" id="kijk">Kijk na</button>';
+    return h+`<p class="big">${a.t4} / 4</p>
+      <label class="l">Moest je bij jouw oefenset telkens nadenken welk soort vraag het was?</label>${radios('denk',[{v:'ja',x:'Ja'},{v:'nee',x:'Nee'}],a)}
+      <div class="box"><b class="h">Wat zie je meestal?</b>Set A stond <b>in blokken</b>: eerst twee keer korting, dan twee keer terugrekenen, dan twee keer procent. Set B stond <b>door elkaar</b>. Set A voelt makkelijker, want je weet al welk soort vraag komt. Bij set B moet je telkens zelf kiezen hoe je het oplost. Dat voelt moeilijker, maar net dat moet je op een examen kunnen. Het voordeel van door elkaar oefenen zie je vooral een paar dagen later, niet meteen. Bij vraag 1 en 4 moest je terugrekenen: wie dat niet herkent, rekent het percentage er gewoon bij of af.</div>
+      <div class="box onthoud"><div class="k">★ ONTHOUD</div><b>Op een examen moet je zelf herkennen welke leerstof je nodig hebt. Dat train je door door elkaar te oefenen.</b></div>`; },
+  bind(a){ const k = $('#kijk'); if(k) k.onclick = () => { a.t4v = TEST.map((_,i)=>document.querySelector(`[data-t="${i}"]`).value); a.t4 = TEST.filter(([q,ans],i)=>Math.abs(num(a.t4v[i])-ans)<.01).length; save(); show(); }; bindRadios(a); },
+  done(a){ return a.t4 != null; }, sum(a){ return a.t4 != null ? ['Test: '+a.t4+'/4 (met set '+a.set+')'] : []; } };
+
+W.krt = { render(a){ a.krt = a.krt || {}; const chk = a.krtChk;
+    return KRT.map(([q,s],i)=>`<div class="q">${esc(q)}<div class="row" style="margin-top:8px">${['K','R','T'].map(x=>`<button class="btn ${a.krt[i]===x?'':'ghost'}" data-kr="${i}" data-x="${x}" style="flex:1">${KRTN[x]}</button>`).join('')}</div>${chk?(a.krt[i]===s?'<p class="good">Juist</p>':`<p class="bad">Het is ${KRTN[s]}.</p>`):''}</div>`).join('')+'<button class="btn wide" id="kc">Kijk na</button>'; },
+  bind(a){ document.querySelectorAll('[data-kr]').forEach(b => b.onclick = () => { a.krt[b.dataset.kr] = b.dataset.x; a.krtChk = false; save(); show(); }); $('#kc').onclick = () => { a.krtChk = true; save(); show(); }; },
+  sum(a){ return a.krtChk ? ['Soorten vragen herkennen: '+KRT.filter(([q,s],i)=>a.krt[i]===s).length+'/6'] : []; } };
+
+W.reeks = { render(a){ const r = a.reeks || (a.reeks = Array.from({length:6},()=>['','',''])); return r.map((x,i)=>`<div class="q"><div class="row"><select data-r="${i}" data-j="0" style="flex:1;min-width:130px"><option value="">Soort</option>${['K','R','T'].map(k=>`<option value="${k}" ${x[0]===k?'selected':''}>${KRTN[k]}</option>`).join('')}</select><input type="text" placeholder="Hoofdstuk" data-r="${i}" data-j="1" value="${esc(x[1])}" style="flex:1;min-width:100px"></div><textarea placeholder="Vraag ${i+1}" data-r="${i}" data-j="2" style="margin-top:6px;min-height:56px">${esc(x[2])}</textarea></div>`).join('')+'<div class="box" id="rchk"></div>'; },
+  bind(a){ const f = () => { const s = a.reeks.map(x=>x[0]).filter(Boolean), m = []; ['K','R','T'].forEach(k => { if(s.filter(x=>x===k).length < 2) m.push(KRTN[k]+' komt minder dan twee keer voor.'); });
+      for(let i=1;i<a.reeks.length;i++) if(a.reeks[i][0] && a.reeks[i][0]===a.reeks[i-1][0]){ m.push('Vraag '+i+' en '+(i+1)+' zijn dezelfde soort. Wissel ze.'); }
+      if(new Set(a.reeks.map(x=>x[1].trim()).filter(Boolean)).size < 3) m.push('Gebruik minstens drie hoofdstukken.');
+      $('#rchk').innerHTML = m.length ? '<b class="h">Nog aanpassen</b>'+m.join('<br>') : '<span class="good">Je reeks volgt de regels.</span>'; save(); };
+    document.querySelectorAll('[data-r]').forEach(t => t[t.tagName==='SELECT'?'onchange':'oninput'] = () => { a.reeks[t.dataset.r][t.dataset.j] = t.value; f(); }); f(); },
+  sum(a){ return (a.reeks||[]).filter(x=>x[2]).map((x,i)=>'• '+(KRTN[x[0]]||'?')+(x[1]?' ('+x[1]+')':'')+': '+x[2]); } };
+
+function counters(key, rows, a){ a[key] = a[key] || {}; return rows.map(([k,n,d])=>`<div class="cnt"><div class="grow"><b>${k}</b> · ${n}${d?`<div class="small muted">${d}</div>`:''}</div><button data-m="${key}|${k}">−</button><b class="n">${a[key][k]||0}</b><button data-p="${key}|${k}">+</button></div>`).join(''); }
+function bindCounters(a){ document.querySelectorAll('[data-p],[data-m]').forEach(b => b.onclick = () => { const [key,k] = (b.dataset.p||b.dataset.m).split('|'); a[key][k] = Math.max(0, (a[key][k]||0) + (b.dataset.p?1:-1)); save(); show(); }); }
+W.fouten = { render(a){ return '<div class="q">'+counters('fout', FOUT, a)+'</div>'; }, bind: bindCounters,
+  sum(a){ const f = a.fout||{}; const s = FOUT.filter(([k])=>f[k]).map(([k,n])=>k+' '+n+': '+f[k]); return s.length ? ['Fouten: '+s.join(' · ')] : []; } };
+W.krtcount = { render(a){ return '<label class="l">Op welke soort vragen verloor je punten?</label><div class="q">'+counters('krtc', [['K','Kennis'],['R','Redeneren'],['T','Toepassen']], a)+'</div>'; }, bind: bindCounters,
+  sum(a){ const f = a.krtc||{}; const s = ['K','R','T'].filter(k=>f[k]).map(k=>KRTN[k]+': '+f[k]); return s.length ? ['Fouten per soort vraag: '+s.join(' · ')] : []; } };
+
+W.opdracht = { render(a){ a.op = a.op || {}; if(!a.opMix){ a.opMix = shuffle(OPDR.map((_,i)=>i)); save(); }
+    return OPDR.map(([w],i)=>`<div class="q"><b>${w}</b><select data-op="${i}" style="margin-top:6px"><option value="">Kies …</option>${a.opMix.map(j=>`<option value="${j}" ${String(a.op[i])===String(j)?'selected':''}>${OPDR[j][1]}</option>`).join('')}</select>${a.opChk?(String(a.op[i])===String(i)?'<p class="good">Juist</p>':`<p class="bad">${OPDR[i][1]}</p>`):''}</div>`).join('')+'<button class="btn wide" id="opk">Kijk na</button>'; },
+  bind(a){ document.querySelectorAll('[data-op]').forEach(s => s.onchange = () => { a.op[s.dataset.op] = s.value; a.opChk = false; save(); }); $('#opk').onclick = () => { a.opChk = true; save(); show(); }; },
+  sum(a){ return a.opChk ? ['Opdrachtwoorden: '+OPDR.filter((_,i)=>String(a.op[i])===String(i)).length+'/5 juist'] : []; } };
+
+W.adem = { render(a){ return `<div class="breath" id="br">Klaar?</div><button class="btn wide ghost" id="go">Start: 3 keer</button>${a.adem?'<p class="good">✓ Geoefend</p>':''}`; },
+  bind(a){ $('#go').onclick = () => { const br = $('#br'); let n = 0; stopTick(); const run = () => { if(n>=6){ br.textContent = 'Goed zo'; br.classList.remove('in'); a.adem = true; save(); return; } const inn = n%2===0; br.classList.toggle('in', inn); let c = 1; br.textContent = (inn?'In ':'Uit ')+c; tick = setInterval(() => { c++; if(c>4){ clearInterval(tick); tick = null; n++; run(); } else br.textContent = (inn?'In ':'Uit ')+c; }, 1000); }; run(); }; },
+  sum(a){ return a.adem ? ['Ademhaling geoefend'] : []; } };
+
+/* ====== gewone blokken ====== */
+function radios(id, opts, a){ return opts.map(o=>`<label class="opt ${a[id]===o.v?'on':''}"><input type="radio" name="${id}" value="${o.v}" data-r="${id}" ${a[id]===o.v?'checked':''}><span>${md(o.x)}</span></label>`).join('') + (opts.find(o=>o.v===a[id]&&o.fb) ? `<div class="fb">${md(opts.find(o=>o.v===a[id]).fb)}</div>` : ''); }
+function bindRadios(a){ document.querySelectorAll('input[type=radio][data-r]').forEach(r => r.onchange = () => { a[r.dataset.r] = r.value; save(); const y = scrollY; show(); scrollTo(0,y); }); }
+function block(b, a){
+  const star = b.req && !KIJK ? ' <span style="color:var(--bad)">*</span>' : '';
+  switch(b.t){
+    case 'p': return `<p>${md(b.x)}</p>`;
+    case 'info': return `<div class="box"><b class="h">${esc(b.h)}</b>${b.x?b.x.split('\n\n').map(p=>`<p>${md(p)}</p>`).join(''):''}${b.items?(b.ol?'<ol style="margin:4px 0;padding-left:22px">':'<ul style="margin:4px 0;padding-left:22px">')+b.items.map(i=>`<li>${md(i)}</li>`).join('')+(b.ol?'</ol>':'</ul>'):''}</div>`;
+    case 'onthoud': return `<div class="box onthoud"><div class="k">★ ONTHOUD</div><b>${md(b.x)}</b></div>`;
+    case 'thuis': return `<div class="box thuis"><div class="k">⌂ THUIS</div>${md(b.x)}</div>`;
+    case 'table': return `<div style="overflow-x:auto"><table class="t"><tr>${b.head.map(h=>`<th>${h}</th>`).join('')}</tr>${b.rows.map(r=>`<tr>${r.map(c=>`<td>${md(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+    case 'text': return `<label class="l">${md(b.label)}${star}</label>`+(b.long?`<textarea data-k="${b.id}" placeholder="${esc(b.ph||'')}">${esc(a[b.id])}</textarea>`:`<input type="text" data-k="${b.id}" placeholder="${esc(b.ph||'')}" value="${esc(a[b.id])}">`);
+    case 'num': return `<label class="l">${md(b.label)}${star}</label><input type="number" inputmode="numeric" data-k="${b.id}" value="${esc(a[b.id])}">`;
+    case 'radio': return `<label class="l">${md(b.label)}${star}</label>`+radios(b.id, b.opts, a);
+    case 'checks': { const v = a[b.id] || []; return `<label class="l">${md(b.label)}</label>`+b.opts.map((o,i)=>`<label class="opt ${v[i]?'on':''}"><input type="checkbox" data-ch="${b.id}" data-i="${i}" ${v[i]?'checked':''}><span>${md(o)}</span></label>`).join(''); }
+    case 'scale': { let h = `<label class="l">${md(b.label)}${star}</label><div class="scale">`; for(let i=b.min;i<=b.max;i++) h += `<button data-sc="${b.id}" data-v="${i}" class="${a[b.id]==i?'on':''}">${i}</button>`; return h+'</div>'; }
+    case 'reveal': return `<div><button class="btn ghost" data-rv>${esc(b.btn)}</button><div class="box hide">${md(b.x)}</div></div>`;
+    case 'link': return `<p><a class="btn ghost" href="${b.href}" target="_blank" rel="noopener">${esc(b.x)} ↗</a></p>`;
+    case 'w': return W[b.w].render(a, b);
+  }
+  return '';
+}
+function bindBlocks(step, a){
+  document.querySelectorAll('[data-k]').forEach(t => { const ev = t.type==='checkbox' ? 'onchange' : 'oninput'; t[ev] = () => { a[t.dataset.k] = t.type==='checkbox' ? t.checked : t.value; save(); if(t.type==='checkbox') t.closest('.opt').classList.toggle('on', t.checked); }; });
+  document.querySelectorAll('[data-ch]').forEach(t => t.onchange = () => { const v = a[t.dataset.ch] = a[t.dataset.ch] || []; v[t.dataset.i] = t.checked; save(); t.closest('.opt').classList.toggle('on', t.checked); });
+  document.querySelectorAll('[data-sc]').forEach(b => b.onclick = () => { a[b.dataset.sc] = +b.dataset.v; save(); b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); });
+  document.querySelectorAll('[data-rv]').forEach(b => b.onclick = () => { b.nextElementSibling.classList.remove('hide'); b.remove(); });
+  bindRadios(a);
+  step.b.filter(b=>b.t==='w' && W[b.w].bind).forEach(b => W[b.w].bind(a, b));
+}
+function b_label(b){ return b.label || (b.w==='cornell' ? 'je Cornell-blad (titel en minstens één blokje)' : b.w==='vakken' ? 'minstens één vak met examendatum' : b.w==='budget' ? 'je tijdsbudget' : ''); }
+function filled(b, a){
+  if(b.t==='text' || b.t==='num') return String(a[b.id]||'').replace(/\s/g,'').length >= (b.t==='num' ? 1 : 3);
+  if(b.t==='radio' || b.t==='scale') return a[b.id] != null && a[b.id] !== '';
+  if(b.w==='cornell') return !!a.cpapier || (String(a.ctitel||'').trim().length >= 3 && (a.corn||[]).some(x => x[0].trim() && x[1].trim()));
+  if(b.w==='vakken') return (a.vak||[]).some(r => r[0].trim() && r[1]);
+  if(b.w==='budget') return (a.budU||0) > 0;
+  return true;
+}
+function stepText(step){ return step.b.map(b => b.t==='p'||b.t==='onthoud'||b.t==='thuis' ? b.x : b.t==='info' ? [b.h, b.x||'', ...(b.items||[])].join('. ') : (b.label||'')).filter(Boolean).join('. '); }
+
+/* ====== bewijsblad ====== */
+function bewijsLines(s, a){
+  const out = [];
+  s.steps.forEach(step => step.b.forEach(b => {
+    if(b.t==='w' && W[b.w].sum) out.push(...W[b.w].sum(a, b).map(x=>['',x]));
+    else if((b.t==='text'||b.t==='num') && a[b.id]) out.push([plain(b.label), a[b.id]]);
+    else if(b.t==='radio' && a[b.id]) out.push([plain(b.label), plain(b.opts.find(o=>o.v===a[b.id]).x)]);
+    else if(b.t==='scale' && a[b.id]) out.push([plain(b.label), a[b.id]]);
+    else if(b.t==='checks'){ const v = a[b.id]||[]; const on = b.opts.filter((_,i)=>v[i]); if(on.length) out.push([plain(b.label), on.map(plain).join(' · ')]); }
+  }));
+  return out;
+}
+function bewijsPng(s, a){
+  const Wd = 1000, pad = 50, c = document.createElement('canvas'), x = c.getContext('2d');
+  const col = getComputedStyle(document.documentElement).getPropertyValue('--'+s.mod).trim();
+  const wrap = (t, font, max) => { x.font = font; const words = String(t).split(/\s+/), L = []; let line = ''; words.forEach(w => { const tt = line ? line+' '+w : w; if(x.measureText(tt).width > max && line){ L.push(line); line = w; } else line = tt; }); if(line) L.push(line); return L.length ? L : ['']; };
+  const items = bewijsLines(s, a); const parts = [];
+  items.forEach(([l,v]) => { if(l) parts.push({f:'bold 22px system-ui,sans-serif', c:'#5d6b7a', L:wrap(l,'bold 22px system-ui,sans-serif',Wd-2*pad), gap:14}); parts.push({f:'24px system-ui,sans-serif', c:'#1d2733', L:wrap(v,'24px system-ui,sans-serif',Wd-2*pad), gap: l?4:12}); });
+  let H = 230; parts.forEach(p => H += p.gap + p.L.length*32); H += 60;
+  c.width = Wd; c.height = H; x.fillStyle = '#fff'; x.fillRect(0,0,Wd,H);
+  x.fillStyle = col; x.fillRect(0,0,Wd,150);
+  x.fillStyle = '#fff'; x.font = 'bold 22px system-ui,sans-serif'; x.fillText('LEREN LEREN · BEWIJSBLAD · '+MODNAAM[s.mod].toUpperCase(), pad, 48);
+  x.font = 'bold 40px system-ui,sans-serif'; x.fillText(s.id+' · '+s.title, pad, 100);
+  x.font = '22px system-ui,sans-serif'; x.fillText((st.me.naam||'(naam)')+' · '+(st.me.klas||'(klas)')+' · klaar op '+fmtTs(a.done||Date.now()), pad, 136);
+  let y = 190; parts.forEach(p => { y += p.gap; x.font = p.f; x.fillStyle = p.c; p.L.forEach(l => { y += 28; x.fillText(l, pad, y); y += 4; }); });
+  return c.toDataURL('image/png');
+}
+
+/* ====== schermen ====== */
+let view = { s:null };
+function setNav(btns){ const n = $('#nav'); if(!btns){ n.classList.add('hide'); return; } n.classList.remove('hide'); $('#navin').innerHTML = btns; }
+function show(){
+  stopTick(); if('speechSynthesis' in window) speechSynthesis.cancel();
+  if(view.s === 'kaart') return showKaart();
+  if(view.s === 'ik') return showIk();
+  if(view.s) return showSessie();
+  showHome();
+}
+function status(id){ const s = st.ses[id]; return !s ? '' : s.done ? '<span class="chip ok">✓ klaar</span>' : (s.step>0 ? '<span class="chip busy">bezig</span>' : ''); }
+function showHome(){
+  setNav(null);
+  const me = st.me; const must = me.module;
+  $('#app').innerHTML = `<header><h1><a href="index.html" style="color:inherit;text-decoration:none">Leren <span>leren</span></a></h1><a class="btn plain" href="toets-jezelf.html">Toets jezelf ↗</a></header>${KIJK?'<div class="box onthoud"><b>Kijkmodus.</b> Niets is verplicht, timers duren 3 seconden en niets wordt bewaard.</div>':''}
+  ${KIJK ? '' : !me.naam ? `<div class="card"><h2>Welkom</h2><p>De sessies leren leren volg je in de klas. Mis je een sessie, of wil je een andere module bijvolgen? Dan doe je ze hier. Elke sessie duurt ongeveer 20 minuten. Op het einde maak je een bewijsblad voor Smartschool.</p><p class="small muted">Typen op je gsm is lastig? Druk op de microfoon van je toetsenbord en spreek je antwoord in.</p><button class="btn wide" id="ik">Begin: vul je gegevens in</button></div>` :
+   `<div class="card"><div class="row"><div style="flex:1"><b>${esc(me.naam)}</b> · ${esc(me.klas||'')}<div class="small muted">${esc(me.vak?'Mijn vak: '+me.vak:'')}</div></div><button class="btn plain" id="ik">Mijn gegevens</button></div></div>`}
+  <div class="card"><h2>De sessies</h2><p class="small muted">Doe ze in deze volgorde. Ze bouwen op elkaar voort.${must&&must!=='alles'?` Jouw verplichte module heeft een zwart label. De andere zijn een aanrader.`:''}</p>
+  ${SESSIES.map(s=>`<button class="ses" data-s="${s.id}" ${me.naam||KIJK?'':'disabled'}><span class="code" style="background:var(--${s.mod})">${s.id}</span><span class="grow"><span class="ti">${esc(s.title)}</span><br><span class="small muted">${MODNAAM[s.mod]} · ${DATUM[s.id]?'in de klas: '+fmtD(DATUM[s.id]):'januari, na je rapport'}</span><br>${(must===s.mod||must==='alles')?'<span class="chip must">verplicht</span>':''}${status(s.id)}</span><span class="muted">›</span></button>`).join('')}
+  </div>
+  <div class="card"><h2>Zo studeer je een hoofdstuk</h2><p class="small muted">De zes stappen op één kaart.</p><button class="btn ghost wide" id="kaart">Toon de kaart</button></div>`;
+  const ik = $('#ik'); if(ik) ik.onclick = () => { view.s = 'ik'; show(); };
+  $('#kaart').onclick = () => { view.s = 'kaart'; show(); };
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { view.s = b.dataset.s; show(); scrollTo(0,0); });
+}
+function showIk(){
+  const me = st.me;
+  const f = (k,l,ph='') => `<label class="l">${l}</label><input type="text" data-me="${k}" value="${esc(me[k])}" placeholder="${esc(ph)}">`;
+  $('#app').innerHTML = `<header><h1>Mijn <span>gegevens</span></h1></header><div class="card">
+    ${f('naam','Naam')}${f('klas','Klas')}${f('vak','Mijn tekortvak (daarmee werk je in de sessies)')}
+    <label class="l">Welke module moet jij volgen? (zegt je klastitularis)</label>
+    <select data-me="module"><option value="">Kies …</option>${['mot','pla','stu'].map(m=>`<option value="${m}" ${me.module===m?'selected':''}>${MODNAAM[m]}</option>`).join('')}<option value="alles" ${me.module==='alles'?'selected':''}>Het volledige traject</option></select>
+    ${f('rapport','Resultaat vorig rapport voor dat vak (%)')}${f('doel','Mijn doel voor het examen (%)')}${f('waarom','Dit is belangrijk voor mij omdat …')}
+  </div>
+  <div class="card"><h2>Reservekopie</h2><p class="small muted">Alles staat op dit toestel, in deze browser. Wis je browsergeschiedenis niet. Wil je verder op een ander toestel? Maak een reservekopie en open ze daar.</p>
+    <div class="row"><button class="btn ghost" id="exp">Reservekopie maken</button><label class="btn ghost" style="margin:0">Reservekopie openen<input type="file" id="imp" accept=".json" class="hide"></label></div></div>`;
+  setNav(`<button class="btn" id="ok">Klaar</button>`);
+  document.querySelectorAll('[data-me]').forEach(t => t[t.tagName==='SELECT'?'onchange':'oninput'] = () => { me[t.dataset.me] = t.value; save(); });
+  $('#ok').onclick = () => { if(!me.naam || !me.klas){ alertBox('Vul minstens je naam en klas in.'); return; } view.s = null; show(); };
+  $('#exp').onclick = () => { const b = new Blob([JSON.stringify(st)], {type:'application/json'}); const l = document.createElement('a'); l.href = URL.createObjectURL(b); l.download = 'leren-leren-'+(me.naam||'kopie').replace(/\W+/g,'-')+'.json'; l.click(); };
+  $('#imp').onchange = e => { const fl = e.target.files[0]; if(!fl) return; fl.text().then(t => { try{ const d = JSON.parse(t); if(d && d.ses){ st = d; st.me = st.me||{}; st.exp = st.exp||{}; save(); view.s = null; show(); } }catch(err){ alertBox('Dit bestand kan ik niet openen.'); } }); };
+}
+function alertBox(msg){ const d = document.createElement('div'); d.className = 'box'; d.style.cssText = 'position:fixed;left:16px;right:16px;bottom:80px;z-index:9;background:#fff;border:1px solid var(--line)'; d.textContent = msg; document.body.appendChild(d); setTimeout(()=>d.remove(), 2600); }
+function showKaart(){
+  $('#app').innerHTML = `<header><h1>Zo studeer je <span>een hoofdstuk</span></h1></header><div class="card kaart"><svg viewBox="0 0 1480 2100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="pijl" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1E2A44"/></marker>
+    <marker id="pijlR" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E4572E"/></marker>
+  </defs>
+  <text x="90" y="130" font-size="32" font-weight="700" fill="#6B7280" letter-spacing="4">LEREN LEREN · STUDIEMETHODE</text>
+  <text x="90" y="210" font-size="72" font-weight="700" fill="#1E2A44">Zo studeer je een hoofdstuk</text>
+    <rect x="90" y="270" width="330" height="184" rx="26" fill="#6E9AD8"/>
+  <text x="120" y="336" font-size="38" font-weight="700" fill="#fff">1</text>
+  <text x="120" y="390" font-size="44" font-weight="700" fill="#fff">Overzicht</text>
+  <rect x="400" y="270" width="870" height="184" rx="26" fill="#EFF4FC"/>
+  <text x="440" y="332" font-size="36" fill="#1E2A44">Bekijk inhoudstafel, titels en leerdoelen.</text>
+  <text x="440" y="378" font-size="36" fill="#1E2A44">Hoe hangen de delen samen?</text>
+  <text x="440" y="426" font-size="28" font-weight="700" font-style="italic" fill="#3D6DB8">Begin klein: 5 minuten</text>
+  <path d="M695 464 L695 480" stroke="#1E2A44" stroke-width="10" marker-end="url(#pijl)"/>
+  <rect x="90" y="516" width="330" height="184" rx="26" fill="#5585CC"/>
+  <text x="120" y="582" font-size="38" font-weight="700" fill="#fff">2</text>
+  <text x="120" y="636" font-size="44" font-weight="700" fill="#fff">Eerst ophalen</text>
+  <rect x="400" y="516" width="870" height="184" rx="26" fill="#EBF1FB"/>
+  <text x="440" y="578" font-size="36" fill="#1E2A44">Boek dicht. Wat weet je nog uit de les?</text>
+  <text x="440" y="624" font-size="36" fill="#1E2A44">Schrijf het op. Wat weet je niet meer?</text>
+  <text x="440" y="672" font-size="28" font-weight="700" font-style="italic" fill="#3D6DB8">Toets jezelf</text>
+  <path d="M695 710 L695 726" stroke="#1E2A44" stroke-width="10" marker-end="url(#pijl)"/>
+  <rect x="90" y="762" width="330" height="276" rx="26" fill="#3F70BC"/>
+  <text x="120" y="828" font-size="38" font-weight="700" fill="#fff">3</text>
+  <text x="120" y="882" font-size="44" font-weight="700" fill="#fff">Verwerken</text>
+  <rect x="400" y="762" width="870" height="276" rx="26" fill="#E7EEF9"/>
+  <text x="440" y="824" font-size="36" fill="#1E2A44">Lees stukje per stukje. Zet het in eigen</text>
+  <text x="440" y="870" font-size="36" fill="#1E2A44">woorden, met een vraag erbij: Cornell-blad</text>
+  <text x="440" y="916" font-size="36" fill="#1E2A44">of kaartjes. Exacte vakken: werk zelf een</text>
+  <text x="440" y="962" font-size="36" fill="#1E2A44">voorbeeld uit en leg elke stap uit.</text>
+  <text x="440" y="1010" font-size="28" font-weight="700" font-style="italic" fill="#3F70BC">Leg uit</text>
+  <path d="M695 1048 L695 1064" stroke="#1E2A44" stroke-width="10" marker-end="url(#pijl)"/>
+  <rect x="90" y="1100" width="330" height="184" rx="26" fill="#2F5EA8"/>
+  <text x="120" y="1166" font-size="38" font-weight="700" fill="#fff">4</text>
+  <text x="120" y="1220" font-size="44" font-weight="700" fill="#fff">Ordenen</text>
+  <rect x="400" y="1100" width="870" height="184" rx="26" fill="#E3EAF6"/>
+  <text x="440" y="1162" font-size="36" fill="#1E2A44">Boek dicht: maak één overzicht van het hele</text>
+  <text x="440" y="1208" font-size="36" fill="#1E2A44">hoofdstuk (schema, tabel, tijdlijn). Vul aan.</text>
+  <text x="440" y="1256" font-size="28" font-weight="700" font-style="italic" fill="#2F5EA8">Hoe hangt alles samen?</text>
+  <path d="M695 1294 L695 1310" stroke="#1E2A44" stroke-width="10" marker-end="url(#pijl)"/>
+  <rect x="90" y="1346" width="330" height="276" rx="26" fill="#24488C"/>
+  <text x="120" y="1412" font-size="38" font-weight="700" fill="#fff">5</text>
+  <text x="120" y="1466" font-size="44" font-weight="700" fill="#fff">Oefenen</text>
+  <rect x="400" y="1346" width="870" height="276" rx="26" fill="#DFE6F3"/>
+  <text x="440" y="1408" font-size="36" fill="#1E2A44">Haal op zonder te kijken. Oefen alle drie:</text>
+  <text x="440" y="1454" font-size="34" fill="#1E2A44"><tspan font-weight="700">Kennis</tspan> → kaartjes: eerst zeggen, dan kijken</text>
+  <text x="440" y="1500" font-size="34" fill="#1E2A44"><tspan font-weight="700">Redeneren</tspan> → hardop uitleggen: waarom?</text>
+  <text x="440" y="1546" font-size="34" fill="#1E2A44"><tspan font-weight="700">Toepassen</tspan> → zonder oplossing, dan nakijken</text>
+  <text x="440" y="1594" font-size="28" font-weight="700" font-style="italic" fill="#24488C">Toets jezelf · Oefen door elkaar</text>
+  <path d="M695 1632 L695 1648" stroke="#1E2A44" stroke-width="10" marker-end="url(#pijl)"/>
+  <rect x="90" y="1684" width="330" height="230" rx="26" fill="#1E2A44"/>
+  <text x="120" y="1750" font-size="38" font-weight="700" fill="#fff">6</text>
+  <text x="120" y="1804" font-size="44" font-weight="700" fill="#fff">Controleren</text>
+  <rect x="400" y="1684" width="870" height="230" rx="26" fill="#E6E9F0"/>
+  <text x="440" y="1746" font-size="36" fill="#1E2A44">Je kent het pas als het zonder kijken lukt.</text>
+  <text x="440" y="1792" font-size="34" fill="#1E2A44"><tspan font-weight="700">Niet begrepen?</tspan> Terug naar 3. <tspan font-weight="700">Niet gekend?</tspan> Naar 5.</text>
+  <text x="440" y="1838" font-size="36" fill="#1E2A44">Snap je het niet? Vraag het je leraar of duo.</text>
+  <text x="440" y="1886" font-size="28" font-weight="700" font-style="italic" fill="#1E2A44">Leer uit fouten</text>
+  <path d="M1275 1799.0 C1385 1799.0, 1385 1799.0, 1385 1659.0 L1385 955.0 C1385 900.0, 1350 900.0, 1295 900.0" fill="none" stroke="#E4572E" stroke-width="10" marker-end="url(#pijlR)"/>
+  <path d="M1385 1484.0 L1295 1484.0" fill="none" stroke="#E4572E" stroke-width="10" marker-end="url(#pijlR)"/>
+  <text x="1400" y="1349.5" font-size="44" font-weight="700" fill="#E4572E" text-anchor="middle" transform="rotate(90 1400 1349.5)">fout? terug</text>
+  <rect x="90" y="1948" width="1180" height="112" rx="26" fill="#FFF6DB" stroke="#E0A100" stroke-width="4"/>
+  <text x="130" y="1998" font-size="36" font-weight="700" fill="#1E2A44">Spreid: zet stap 5 nu al in je planner, voor morgen en volgende week.</text>
+  <text x="130" y="2042" font-size="32" fill="#1E2A44">Meng dan met vorige hoofdstukken. Wat fout was, komt eerst.</text>
+</svg></div>`;
+  setNav(`<button class="btn" id="terug">Terug</button>`); $('#terug').onclick = () => { view.s = null; show(); };
+}
+function showSessie(){
+  const s = BYID[view.s], x = ses(s.id), a = x.a;
+  if(x.step === 'bewijs') return showBewijs(s, x);
+  const i = Math.min(x.step, s.steps.length-1), step = s.steps[i];
+  $('#app').innerHTML = `<div class="top" style="background:var(--${s.mod})"><div class="k">${MODNAAM[s.mod].toUpperCase()} · ${s.id}</div><h2>${esc(s.title)}</h2>${i===0?`<div>${esc(s.doel)}</div><div style="margin-top:6px"><b>Na deze sessie heb je:</b> ${esc(PRODUCT[s.id])}.</div>`:''}<div class="prog"><i style="width:${Math.round((i+1)/s.steps.length*100)}%"></i></div><div class="small" style="margin-top:6px">Stap ${i+1} van ${s.steps.length}</div></div>
+    <div class="card"><button class="btn plain say" id="say" title="Lees voor">🔊 Lees voor</button><h2>${esc(step.h)}</h2>${!KIJK && step.b.some(b=>b.req)?'<p class="small muted"><span style="color:var(--bad)">*</span> moet je invullen</p>':''}${step.b.map(b=>block(b,a)).join('')}</div>
+    <p class="noprint"><button class="btn plain" id="home">← Alle sessies</button></p>`;
+  bindBlocks(step, a);
+  $('#say').onclick = () => speak(step.h+'. '+stepText(step));
+  $('#home').onclick = () => { view.s = null; show(); };
+  const last = i === s.steps.length-1;
+  setNav(`${i>0?'<button class="btn ghost" id="prev">Terug</button>':''}<button class="btn" id="next">${last?'Klaar: maak mijn bewijsblad':'Volgende'}</button>`);
+  if(i>0) $('#prev').onclick = () => { x.step = i-1; save(); show(); scrollTo(0,0); };
+  $('#next').onclick = () => {
+    const open = step.b.find(b => b.t==='w' && W[b.w].done && !W[b.w].done(a));
+    if(open && !KIJK){ alertBox('Werk deze stap eerst af.'); return; }
+    const leeg = KIJK ? null : step.b.find(b => b.req && !filled(b, a));
+    if(leeg){ alertBox('Vul eerst in: '+plain(b_label(leeg))); const el = document.querySelector(`[data-k="${leeg.id}"],[data-r="${leeg.id}"],[data-sc="${leeg.id}"]`); if(el){ el.scrollIntoView({block:'center'}); if(el.focus) el.focus(); } return; }
+    if(last){ x.done = a.done = a.done || Date.now(); x.step = 'bewijs'; } else x.step = i+1;
+    save(); show(); scrollTo(0,0);
+  };
+}
+function showBewijs(s, x){
+  const url = bewijsPng(s, x.a);
+  $('#app').innerHTML = `<div class="top" style="background:var(--${s.mod})"><div class="k">${MODNAAM[s.mod].toUpperCase()} · ${s.id}</div><h2>Goed gedaan!</h2><div>Sessie ${s.id} is klaar.</div></div>
+    <div class="card"><h2>Je bewijsblad</h2><ol style="padding-left:22px"><li>Druk op <b>Bewijsblad opslaan</b>.</li><li>Zet de afbeelding in Smartschool, bij de opdracht <b>Leren leren ${s.id}</b>.${s.id==='S2'||s.id==='S3'?' Voeg je schermafbeelding van Toets jezelf toe.':''}</li></ol>
+    <a class="btn wide" href="${url}" download="Bewijsblad-${s.id}-${(st.me.naam||'leerling').replace(/\W+/g,'-')}.png">Bewijsblad opslaan</a>
+    <img class="bewijs" src="${url}" alt="Bewijsblad ${s.id}"></div>`;
+  setNav(`<button class="btn ghost" id="aan">Antwoorden aanpassen</button><button class="btn" id="home">Alle sessies</button>`);
+  $('#aan').onclick = () => { x.step = 0; save(); show(); scrollTo(0,0); };
+  $('#home').onclick = () => { view.s = null; show(); scrollTo(0,0); };
+}
+show();
+</script>
+</body>
+</html>
